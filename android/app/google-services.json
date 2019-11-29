@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "479273875220",
+    "firebase_url": "https://my-remote-care.firebaseio.com",
+    "project_id": "my-remote-care",
+    "storage_bucket": "my-remote-care.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479273875220:android:0e3354c857476a6c217401",
+        "android_client_info": {
+          "package_name": "com.example.mrc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479273875220-f7bk8rmu9iq12pvfnat56j2ue85pkfrq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvcVMsTEDt6nYi396J_vo-IPM2aVWHVDI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479273875220-f7bk8rmu9iq12pvfnat56j2ue85pkfrq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "479273875220-922jujb65dnk5bj2km30qqc7bo0n1pbd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "bujnowicz.mrc"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
