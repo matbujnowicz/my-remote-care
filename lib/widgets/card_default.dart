@@ -11,7 +11,7 @@ class CardDefault extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(20),
       margin: margin,
       width: screenWidth * 0.9,
       child: child,

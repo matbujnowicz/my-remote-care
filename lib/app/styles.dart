@@ -11,17 +11,41 @@ const backgroundGradient = LinearGradient(
 
 final primaryGreenColor = Color.fromARGB(255, 0, 149, 131);
 final grayColor = Color.fromARGB(255, 198, 198, 198);
+final accentColor = Color.fromARGB(255, 231, 66, 146);
+final accentDarkerColor = Color.fromARGB(255, 133, 28, 79);
 
 final greenFont = TextStyle(
   color: primaryGreenColor,
-  fontSize: 15.0,
+  fontSize: 18.0,
+  fontFamily: 'Roboto',
+  letterSpacing: 0.5,
+);
+
+final whiteFont = TextStyle(
+  color: Colors.white,
+  fontSize: 18.0,
+  fontFamily: 'Roboto',
+  letterSpacing: 0.5,
+);
+
+final accentFont = TextStyle(
+  color: accentColor,
+  fontSize: 18.0,
+  fontFamily: 'Roboto',
+  letterSpacing: 0.5,
+);
+
+final grayFont = TextStyle(
+  color: grayColor,
+  fontSize: 18.0,
   fontFamily: 'Roboto',
   letterSpacing: 0.5,
 );
 
 final greenBoldFont = TextStyle(
   color: primaryGreenColor,
-  fontSize: 15.0,
-  fontFamily: 'Roboto bold',
+  fontSize: 18.0,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.bold,
   letterSpacing: 0.5,
 );

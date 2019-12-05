@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/widgets/card_default.dart';
+import 'package:mrc/widgets/primary_button.dart';
+import 'package:mrc/widgets/text_button.dart';
+import 'package:mrc/widgets/text_field_default.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({
@@ -44,11 +47,35 @@ class _LoginScreenScreenState extends State<LoginScreen> {
                   ),
                   margin: const EdgeInsets.only(top: 85),
                 ),
-                CardDefault(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: _buildLoginCard(),
-                )
+                _buildLoginCard(),
               ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              width: screenWidth,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    child: PrimaryButton(
+                      text: "Log in",
+                      onPressed: _handleLogin,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 40),
+                    child: TextButton(
+                      text: "Register new account",
+                      onPressed: _handleGoToRegister,
+                      textStyle: accentFont,
+                      pressedTextStyle: grayFont,
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         ],
@@ -57,32 +84,34 @@ class _LoginScreenScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLoginCard() {
-    return Column(
-      children: <Widget>[
-        Text("Login", style: greenBoldFont),
-        TextField(
-          //TODO -> EXPORT THIS TEXTFIELD TO WIDGET
-          autocorrect: false,
-          controller: _emailController,
-          decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(const Radius.circular(15)),
-              borderSide: BorderSide(
-                color: primaryGreenColor,
-                width: 1.0,
-              ),
+    return CardDefault(
+      margin: const EdgeInsets.only(top: 20),
+      child: Column(
+        children: <Widget>[
+          Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(bottom: 15),
+              child: Text("Login", style: greenBoldFont)),
+          Container(
+            margin: EdgeInsets.only(bottom: 15),
+            child: TextFieldDefault(
+              controller: _emailController,
+              hint: "Email address",
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(const Radius.circular(15)),
-              borderSide: BorderSide(color: grayColor, width: 1.0),
-            ),
-            hintText: 'Email address',
           ),
-        ),
-        TextField(
-          controller: _passwordController,
-        )
-      ],
+          TextFieldDefault(
+            controller: _passwordController,
+            hint: "Password",
+            obscureText: true,
+          )
+        ],
+      ),
     );
+  }
+
+  void _handleLogin() {}
+
+  void _handleGoToRegister() {
+    Navigator.pushNamed(context, "/register");
   }
 }
