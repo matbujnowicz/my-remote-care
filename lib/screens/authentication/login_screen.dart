@@ -109,7 +109,9 @@ class _LoginScreenScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleLogin() {}
+  void _handleLogin() {
+    Navigator.pushNamed(context, "/supervisorPanel");
+  }
 
   void _handleGoToRegister() {
     Navigator.pushNamed(context, "/register");

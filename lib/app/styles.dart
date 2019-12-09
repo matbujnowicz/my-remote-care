@@ -13,6 +13,7 @@ final primaryGreenColor = Color.fromARGB(255, 0, 149, 131);
 final grayColor = Color.fromARGB(255, 198, 198, 198);
 final accentColor = Color.fromARGB(255, 231, 66, 146);
 final accentDarkerColor = Color.fromARGB(255, 133, 28, 79);
+final whiteColor = Colors.white;
 
 final greenFont = TextStyle(
   color: primaryGreenColor,
