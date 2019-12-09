@@ -19,23 +19,26 @@ class RaportModel {
   RaportType raportType;
   List<Question> questions;
 
-  RaportModel(
-      {this.submitted,
-      @required this.scheduledDate,
-      this.submissionDate,
-      @required this.raportType}) {
-    switch (raportType) {
-      case RaportType.Diet:
-        questions = dietQuestions;
-        break;
-      case RaportType.Mood:
-        questions = moodQuestions;
-        break;
-      case RaportType.Medicines:
-        questions = medicinesQuestions;
-        break;
-      default:
-    }
+  RaportModel({
+    @required this.scheduledDate,
+    @required this.raportType,
+    this.submitted,
+    this.submissionDate,
+    this.questions,
+  }) {
+    if (questions == null)
+      switch (raportType) {
+        case RaportType.Diet:
+          questions = dietQuestions;
+          break;
+        case RaportType.Mood:
+          questions = moodQuestions;
+          break;
+        case RaportType.Medicines:
+          questions = medicinesQuestions;
+          break;
+        default:
+      }
   }
 
   String getName() {
@@ -79,3 +82,32 @@ List<Question> medicinesQuestions = [
       questionType: QuestionType.Text,
       question: "What medicines has patient taken today?"),
 ];
+
+List<RaportModel> initialRaports() {
+  List<RaportModel> initialRaportsMock = [];
+
+  List<Question> answeredDietQuestions = dietQuestions;
+  answeredDietQuestions.elementAt(0).answer = "Cereals with milk";
+  answeredDietQuestions.elementAt(1).answer = "Hotd dog";
+  answeredDietQuestions.elementAt(2).answer = "Bean soup";
+  answeredDietQuestions.elementAt(3).answer = 3;
+
+  RaportModel answereDietModelSubmitted = RaportModel(
+      submitted: true,
+      scheduledDate: DateTime.now(),
+      raportType: RaportType.Diet,
+      questions: answeredDietQuestions,
+      submissionDate: DateTime.now());
+
+  RaportModel answereDietModelNotSubmitted = RaportModel(
+      submitted: false,
+      scheduledDate: DateTime.now(),
+      raportType: RaportType.Diet,
+      questions: answeredDietQuestions,
+      submissionDate: DateTime.now());
+
+  initialRaportsMock.add(answereDietModelSubmitted);
+  initialRaportsMock.add(answereDietModelNotSubmitted);
+
+  return initialRaportsMock;
+}

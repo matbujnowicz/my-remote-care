@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
+import 'package:mrc/data/raport_model.dart';
+import 'package:mrc/screens/supervisor/browse_screen.dart';
 
 class SupervisorPanel extends StatefulWidget {
   SupervisorPanel({
@@ -13,6 +15,7 @@ class SupervisorPanel extends StatefulWidget {
 class _SupervisorPanelState extends State<SupervisorPanel> {
   final _barHeight = 100.0;
   int _screenIndex = 0;
+  List<RaportModel> _readyRaports = initialRaports();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +63,7 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
               Expanded(
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 200),
-                  child: Container(),
+                  child: _getScreenWidget(),
                 ),
               ),
               Container(
@@ -132,6 +135,21 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
         return "Statistics";
       default:
         return "";
+    }
+  }
+
+  Widget _getScreenWidget() {
+    switch (_screenIndex) {
+      case 0:
+        return BrowseScreen(_readyRaports);
+      case 1:
+        return Container();
+      case 2:
+        return Container();
+      case 3:
+        return Container();
+      default:
+        return Container();
     }
   }
 
