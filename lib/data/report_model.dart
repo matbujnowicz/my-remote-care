@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum RaportType {
+enum ReportType {
   Mood,
   Diet,
   Medicines,
@@ -11,30 +11,30 @@ enum QuestionType {
   Radio,
 }
 
-class RaportModel {
+class ReportModel {
   bool submitted;
   DateTime scheduledDate;
   DateTime submissionDate;
   Duration duration = Duration(hours: 1);
-  RaportType raportType;
+  ReportType reportType;
   List<Question> questions;
 
-  RaportModel({
+  ReportModel({
     @required this.scheduledDate,
-    @required this.raportType,
+    @required this.reportType,
     this.submitted,
     this.submissionDate,
     this.questions,
   }) {
     if (questions == null)
-      switch (raportType) {
-        case RaportType.Diet:
+      switch (reportType) {
+        case ReportType.Diet:
           questions = dietQuestions;
           break;
-        case RaportType.Mood:
+        case ReportType.Mood:
           questions = moodQuestions;
           break;
-        case RaportType.Medicines:
+        case ReportType.Medicines:
           questions = medicinesQuestions;
           break;
         default:
@@ -42,12 +42,12 @@ class RaportModel {
   }
 
   String getName() {
-    switch (raportType) {
-      case RaportType.Diet:
+    switch (reportType) {
+      case ReportType.Diet:
         return "Diet";
-      case RaportType.Mood:
+      case ReportType.Mood:
         return "Diet";
-      case RaportType.Medicines:
+      case ReportType.Medicines:
         return "Diet";
       default:
         return "";
@@ -83,8 +83,8 @@ List<Question> medicinesQuestions = [
       question: "What medicines has patient taken today?"),
 ];
 
-List<RaportModel> initialRaports() {
-  List<RaportModel> initialRaportsMock = [];
+List<ReportModel> initialReports() {
+  List<ReportModel> initialReportsMock = [];
 
   List<Question> answeredDietQuestions = dietQuestions;
   answeredDietQuestions.elementAt(0).answer = "Cereals with milk";
@@ -92,22 +92,22 @@ List<RaportModel> initialRaports() {
   answeredDietQuestions.elementAt(2).answer = "Bean soup";
   answeredDietQuestions.elementAt(3).answer = 3;
 
-  RaportModel answereDietModelSubmitted = RaportModel(
+  ReportModel answereDietModelSubmitted = ReportModel(
       submitted: true,
       scheduledDate: DateTime.now(),
-      raportType: RaportType.Diet,
+      reportType: ReportType.Diet,
       questions: answeredDietQuestions,
       submissionDate: DateTime.now());
 
-  RaportModel answereDietModelNotSubmitted = RaportModel(
+  ReportModel answereDietModelNotSubmitted = ReportModel(
       submitted: false,
       scheduledDate: DateTime.now(),
-      raportType: RaportType.Diet,
+      reportType: ReportType.Diet,
       questions: answeredDietQuestions,
       submissionDate: DateTime.now());
 
-  initialRaportsMock.add(answereDietModelSubmitted);
-  initialRaportsMock.add(answereDietModelNotSubmitted);
+  initialReportsMock.add(answereDietModelSubmitted);
+  initialReportsMock.add(answereDietModelNotSubmitted);
 
-  return initialRaportsMock;
+  return initialReportsMock;
 }

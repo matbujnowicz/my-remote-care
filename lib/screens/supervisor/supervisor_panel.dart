@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
-import 'package:mrc/data/raport_model.dart';
+import 'package:mrc/data/report_model.dart';
 import 'package:mrc/screens/supervisor/browse_screen.dart';
 
 class SupervisorPanel extends StatefulWidget {
@@ -15,7 +15,7 @@ class SupervisorPanel extends StatefulWidget {
 class _SupervisorPanelState extends State<SupervisorPanel> {
   final _barHeight = 100.0;
   int _screenIndex = 0;
-  List<RaportModel> _readyRaports = initialRaports();
+  List<ReportModel> _readyReports = initialReports();
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
   Widget _getScreenWidget() {
     switch (_screenIndex) {
       case 0:
-        return BrowseScreen(_readyRaports);
+        return BrowseScreen(_readyReports);
       case 1:
         return Container();
       case 2:
