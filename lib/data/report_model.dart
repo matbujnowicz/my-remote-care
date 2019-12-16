@@ -20,8 +20,8 @@ class ReportModel {
   List<Question> questions;
 
   ReportModel({
-    @required this.scheduledDate,
-    @required this.reportType,
+    this.scheduledDate,
+    this.reportType,
     this.submitted,
     this.submissionDate,
     this.questions,
@@ -41,14 +41,14 @@ class ReportModel {
       }
   }
 
-  String getName() {
+  static String getName(ReportType reportType) {
     switch (reportType) {
       case ReportType.Diet:
         return "Diet";
       case ReportType.Mood:
-        return "Diet";
+        return "Mood";
       case ReportType.Medicines:
-        return "Diet";
+        return "Medicines";
       default:
         return "";
     }
@@ -108,6 +108,29 @@ List<ReportModel> initialReports() {
 
   initialReportsMock.add(answereDietModelSubmitted);
   initialReportsMock.add(answereDietModelNotSubmitted);
+
+  return initialReportsMock;
+}
+
+List<ReportModel> notInitialReports() {
+  List<ReportModel> initialReportsMock = [];
+
+  ReportModel reportMood = ReportModel(
+    reportType: ReportType.Mood,
+    scheduledDate: DateTime.now(),
+    questions: moodQuestions,
+  );
+
+  ReportModel reportMedicines = ReportModel(
+    reportType: ReportType.Medicines,
+    scheduledDate: DateTime.now(),
+    questions: medicinesQuestions,
+  );
+
+  initialReportsMock.add(reportMood);
+  initialReportsMock.add(reportMedicines);
+  initialReportsMock.add(reportMood);
+  initialReportsMock.add(reportMedicines);
 
   return initialReportsMock;
 }

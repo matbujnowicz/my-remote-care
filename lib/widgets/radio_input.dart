@@ -3,10 +3,12 @@ import 'package:mrc/app/styles.dart';
 
 class RadioInput extends StatefulWidget {
   final TextEditingController controller;
+  final bool enabled;
 
   RadioInput({
     Key key,
     this.controller,
+    this.enabled,
   }) : super(key: key);
 
   @override
@@ -109,6 +111,7 @@ class _RadioInputState extends State<RadioInput> {
   }
 
   void changeGroupValue(int value) {
+    if (!widget.enabled) return;
     setState(() {
       groupValue = value;
     });

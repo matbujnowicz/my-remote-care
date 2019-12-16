@@ -81,7 +81,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
   Widget buildAnswerField(Question question) {
     TextEditingController controller = TextEditingController();
-    controller.text = question.answer.toString();
+    controller.text = question.answer == null ? "" : question.answer.toString();
     controllers.add(controller);
 
     switch (question.questionType) {
@@ -94,6 +94,7 @@ class _ReportScreenState extends State<ReportScreen> {
       case QuestionType.Radio:
         return RadioInput(
           controller: controller,
+          enabled: !widget.arguments.readOnly,
         );
       default:
         return Container();

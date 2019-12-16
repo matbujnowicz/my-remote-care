@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/report_model.dart';
 import 'package:mrc/screens/supervisor/browse_screen.dart';
+import 'package:mrc/screens/supervisor/manage_screen.dart';
 
 class SupervisorPanel extends StatefulWidget {
   SupervisorPanel({
@@ -13,9 +14,9 @@ class SupervisorPanel extends StatefulWidget {
 }
 
 class _SupervisorPanelState extends State<SupervisorPanel> {
-  final _barHeight = 100.0;
   int _screenIndex = 0;
   List<ReportModel> _readyReports = initialReports();
+  List<ReportModel> _notReadyReports = notInitialReports();
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +35,9 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
           Column(
             children: <Widget>[
               Container(
+                padding: const EdgeInsets.only(top: 50),
                 color: whiteColor,
                 width: screenWidth,
-                height: _barHeight,
                 child: Stack(children: <Widget>[
                   Positioned(
                     child: IconButton(
@@ -69,10 +70,9 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
               Container(
                 color: whiteColor,
                 width: screenWidth,
-                height: _barHeight,
                 child: Container(
-                  alignment: Alignment.topCenter,
-                  padding: EdgeInsets.only(top: 10),
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(vertical: 10),
                   child: _buildNavigationBar(),
                 ),
               )
@@ -143,7 +143,11 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
       case 0:
         return BrowseScreen(_readyReports);
       case 1:
-        return Container();
+        return ManageScreen(
+          reports: _notReadyReports,
+          removeReport: _removeReport,
+          addReport: _addReport,
+        );
       case 2:
         return Container();
       case 3:
@@ -157,6 +161,18 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
     if (newScreenIndex == _screenIndex) return;
     setState(() {
       _screenIndex = newScreenIndex;
+    });
+  }
+
+  void _removeReport(ReportModel report) {
+    setState(() {
+      _notReadyReports.remove(report);
+    });
+  }
+
+  void _addReport(ReportModel report) {
+    setState(() {
+      _notReadyReports.add(report);
     });
   }
 }

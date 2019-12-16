@@ -7,8 +7,9 @@ import 'package:mrc/widgets/card_default.dart';
 class ReportCard extends StatelessWidget {
   final ReportModel report;
   final Function onPress;
+  final Function removeObject;
 
-  ReportCard({@required this.report, this.onPress});
+  ReportCard({@required this.report, this.onPress, this.removeObject});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class ReportCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              "${report.getName()} - ${getFormattedDate(report.submissionDate)}",
+              "${ReportModel.getName(report.reportType)} - ${getFormattedDate()}",
               style: report.submitted != null && !report.submitted
                   ? accentFont
                   : greenFont,
@@ -33,13 +34,22 @@ class ReportCard extends StatelessWidget {
     );
   }
 
-  String getFormattedDate(DateTime date) {
-    final format = DateFormat('dd.MM hh:mm');
-    return format.format(date);
+  String getFormattedDate() {
+    final format = DateFormat('dd.MM hh:mm a');
+    if (report.submissionDate != null)
+      return format.format(report.submissionDate);
+    else
+      return format.format(report.scheduledDate);
   }
 
   Widget getIcon() {
-    if (report.submitted == null) return Container();
+    if (report.submitted == null)
+      return IconButton(
+        icon: Icon(Icons.remove_circle_outline),
+        onPressed: removeObject,
+        iconSize: 35,
+        color: primaryGreenColor,
+      );
     if (report.submitted)
       return IconButton(
         iconSize: 35,
