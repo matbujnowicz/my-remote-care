@@ -26,14 +26,14 @@ class ManageScreen extends StatelessWidget {
               child: PrimaryButton(
                 text: "Add new report",
                 onPressed: () {
-                  _addReportScreen(context);
+                  addReportScreen(context);
                 },
               ),
             );
           return ReportCard(
             report: reports.elementAt(index - 1),
             onPress: () {
-              _viewReport(reports.elementAt(index - 1), context);
+              viewReport(reports.elementAt(index - 1), context);
             },
             removeObject: () {
               removeReport(reports.elementAt(index - 1));
@@ -44,12 +44,12 @@ class ManageScreen extends StatelessWidget {
     );
   }
 
-  void _viewReport(ReportModel report, BuildContext context) {
+  void viewReport(ReportModel report, BuildContext context) {
     Navigator.pushNamed(context, "/reportScreen",
         arguments: ReportScreenArguments(report: report, readOnly: true));
   }
 
-  void _addReportScreen(BuildContext context) {
+  void addReportScreen(BuildContext context) {
     Navigator.pushNamed(context, '/addReportScreen', arguments: addReport);
   }
 }

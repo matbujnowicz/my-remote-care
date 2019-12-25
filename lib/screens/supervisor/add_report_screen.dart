@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/report_model.dart';
+import 'package:mrc/screens/common/report_screen.dart';
 import 'package:mrc/screens/common/single_screen.dart';
 import 'package:mrc/widgets/card_default.dart';
 import 'package:mrc/widgets/date_time_picker_default.dart';
@@ -49,7 +50,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
                         Container(
                           width: double.infinity,
                           margin: EdgeInsets.only(bottom: 15),
-                          child: _buildDropdown(),
+                          child: buildDropdown(),
                         ),
                         Container(
                           margin: EdgeInsets.only(bottom: 15),
@@ -59,7 +60,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
                           ),
                         ),
                         DateTimePickerDefault(
-                          onDatePicked: _onDatePicked,
+                          onDatePicked: onDatePicked,
                           valueDate: report.scheduledDate,
                         )
                       ],
@@ -70,6 +71,9 @@ class _AddReportScreenState extends State<AddReportScreen> {
                       margin: EdgeInsets.only(top: 30),
                       child: ReportCard(
                         report: report,
+                        onPress: () {
+                          viewReport(report, context);
+                        },
                       ),
                     ),
                 ],
@@ -80,7 +84,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
                   text: "Add new report",
                   onPressed: buttonEnabled
                       ? () {
-                          _addReport(context);
+                          addReport(context);
                         }
                       : null,
                 ),
@@ -92,7 +96,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
     );
   }
 
-  Widget _buildDropdown() {
+  Widget buildDropdown() {
     final items = ReportType.values
         .map<DropdownMenuItem<ReportType>>(
           (ReportType type) => DropdownMenuItem<ReportType>(
@@ -107,18 +111,18 @@ class _AddReportScreenState extends State<AddReportScreen> {
     return DropdownDefault(
       items: items,
       value: report.reportType == null ? null : report.reportType,
-      onChanged: _onDropdownChanged,
+      onChanged: onDropdownChanged,
     );
   }
 
-  void _onDropdownChanged(ReportType type) {
+  void onDropdownChanged(ReportType type) {
     setState(() {
-      report.reportType = type;
+      report.setType(type);
     });
-    _isButtonActive();
+    isButtonActive();
   }
 
-  void _isButtonActive() {
+  void isButtonActive() {
     if (report.reportType != null && report.scheduledDate != null)
       buttonEnabled = true;
     else
@@ -126,15 +130,20 @@ class _AddReportScreenState extends State<AddReportScreen> {
     setState(() {});
   }
 
-  void _onDatePicked(DateTime newDate) {
+  void onDatePicked(DateTime newDate) {
     setState(() {
       report.scheduledDate = newDate;
     });
-    _isButtonActive();
+    isButtonActive();
   }
 
-  void _addReport(BuildContext context) {
+  void addReport(BuildContext context) {
     widget.addReport(report);
     Navigator.pop(context);
+  }
+
+  void viewReport(ReportModel report, BuildContext context) {
+    Navigator.pushNamed(context, "/reportScreen",
+        arguments: ReportScreenArguments(report: report, readOnly: true));
   }
 }

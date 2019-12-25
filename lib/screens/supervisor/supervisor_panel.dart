@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/patient_model.dart';
 import 'package:mrc/data/report_model.dart';
+import 'package:mrc/data/sample_reports.dart';
+import 'package:mrc/data/statiscis_generator.dart';
 import 'package:mrc/screens/supervisor/browse_screen.dart';
 import 'package:mrc/screens/supervisor/edit_patient_info.dart';
 import 'package:mrc/screens/supervisor/manage_screen.dart';
+import 'package:mrc/screens/supervisor/statiscits_screen.dart';
 
 class SupervisorPanel extends StatefulWidget {
   SupervisorPanel({
@@ -17,8 +20,8 @@ class SupervisorPanel extends StatefulWidget {
 
 class _SupervisorPanelState extends State<SupervisorPanel> {
   int _screenIndex = 0;
-  List<ReportModel> _readyReports = initialReports();
-  List<ReportModel> _notReadyReports = notInitialReports();
+  List<ReportModel> _readyReports = readyReports();
+  List<ReportModel> _notReadyReports = pendingReports();
   final PatientModel patient = PatientModel();
 
   @override
@@ -154,7 +157,8 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
       case 2:
         return EditPatientInfoScreen(patient);
       case 3:
-        return Container();
+        return StatisticsScreen(
+            _readyReports, generateStatistics(_readyReports));
       default:
         return Container();
     }

@@ -19,7 +19,7 @@ class BrowseScreen extends StatelessWidget {
           return ReportCard(
             report: reports.elementAt(index),
             onPress: () {
-              _viewReport(reports.elementAt(index), context);
+              viewReport(reports.elementAt(index), context);
             },
           );
         },
@@ -27,7 +27,7 @@ class BrowseScreen extends StatelessWidget {
     );
   }
 
-  void _viewReport(ReportModel report, BuildContext context) {
+  void viewReport(ReportModel report, BuildContext context) {
     Navigator.pushNamed(context, "/reportScreen",
         arguments: ReportScreenArguments(report: report, readOnly: true));
   }

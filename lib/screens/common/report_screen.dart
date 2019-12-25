@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
+import 'package:mrc/data/question_model.dart';
 import 'package:mrc/data/report_model.dart';
 import 'package:mrc/screens/common/single_screen.dart';
 import 'package:mrc/widgets/card_default.dart';

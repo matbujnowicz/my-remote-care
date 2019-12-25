@@ -35,7 +35,7 @@ class ReportCard extends StatelessWidget {
   }
 
   String getFormattedDate() {
-    final format = DateFormat('dd.MM hh:mm a');
+    final format = DateFormat('dd.MM HH:mm');
     if (report.submissionDate != null)
       return format.format(report.submissionDate);
     else

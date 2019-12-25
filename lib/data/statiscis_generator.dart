@@ -1,3 +1,4 @@
+import 'package:mrc/data/question_model.dart';
 import 'package:mrc/data/report_model.dart';
 import 'dart:core';
 
@@ -19,9 +20,20 @@ Map<String, String> generateStatistics(List<ReportModel> reports) {
   Map<String, String> statistics = Map();
   Map<ReportType, bool> existingTypes = generateExistingTypes(reports);
 
+  statistics.putIfAbsent(
+      "Caregiver effectiveness", () => effectiveness(reports));
+
   if (existingTypes[ReportType.Diet]) {
-    statistics.putIfAbsent("Favourite meal", () => "Favourite meal");
-    statistics["Favourite meal"] = favouriteMeal(reports);
+    statistics.putIfAbsent("Favourite meal", () => favouriteMeal(reports));
+  }
+
+  if (existingTypes[ReportType.Mood]) {
+    statistics.putIfAbsent("Average mood", () => averageMood(reports));
+  }
+
+  if (existingTypes[ReportType.Medicines]) {
+    statistics.putIfAbsent(
+        "Number of medicines reports", () => medicinesReportsCount(reports));
   }
 
   return statistics;
@@ -37,12 +49,56 @@ String favouriteMeal(List<ReportModel> reports) {
       if (mealsOccurence.containsKey(question.answer))
         mealsOccurence[question.answer]++;
       else {
-        mealsOccurence.putIfAbsent(question.answer, () => question.answer);
-        mealsOccurence[question.answer] = 1;
+        mealsOccurence.putIfAbsent(question.answer, () => 1);
       }
     });
   });
 
-  //TODO return max occurence meal
-  return null;
+  String favMeal;
+  int topOccurence = 0;
+  mealsOccurence.forEach((meal, occurence) {
+    if (topOccurence < occurence) {
+      topOccurence = occurence;
+      favMeal = meal;
+    }
+  });
+
+  return favMeal;
+}
+
+String averageMood(List<ReportModel> reports) {
+  double averageMood = 0;
+  int moodReportscount = 0;
+
+  reports.forEach((report) {
+    if (report.reportType != ReportType.Mood) return;
+    moodReportscount++;
+    averageMood += report.questions[1].answer;
+  });
+
+  return (averageMood / moodReportscount).toString();
+}
+
+String medicinesReportsCount(List<ReportModel> reports) {
+  int reportsCount = 0;
+
+  reports.forEach((report) {
+    if (report.reportType != ReportType.Medicines) return;
+    reportsCount++;
+  });
+
+  return reportsCount.toString();
+}
+
+String effectiveness(List<ReportModel> reports) {
+  double submittedReports = 0;
+
+  reports.forEach((report) {
+    if (report.submitted) submittedReports++;
+  });
+
+  submittedReports /= reports.length;
+  submittedReports *= 100;
+
+  return "${submittedReports.floor()}%".toString();
 }
