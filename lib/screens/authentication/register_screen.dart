@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/widgets/card_default.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/text_button.dart';
 import 'package:mrc/widgets/text_field_default.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({
@@ -15,10 +17,14 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenScreenState extends State<RegisterScreen> {
-  TextEditingController _emailController;
-  TextEditingController _passwordController;
-  TextEditingController _retypePasswordController;
+  final _auth = FirebaseAuth.instance;
+  final _firestore = Firestore.instance;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _retypePasswordController = TextEditingController();
   bool _isCaregiver = false;
+  String message = "";
+  bool buttonEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +70,7 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
                     margin: const EdgeInsets.only(bottom: 20),
                     child: PrimaryButton(
                       text: "Register",
-                      onPressed: _handleRegister,
+                      onPressed: buttonEnabled ? registerUser : null,
                     ),
                   ),
                   Container(
@@ -128,15 +134,14 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
             controller: _retypePasswordController,
             hint: "Retype password",
             obscureText: true,
-          )
+          ),
+          Text(
+            message,
+            style: redSmallFont,
+          ),
         ],
       ),
     );
-  }
-
-  void _handleRegister() {
-    if (_passwordController.text != _retypePasswordController.text)
-      print("Passwords are not the same");
   }
 
   void _handleGoToLogin() {
@@ -147,5 +152,62 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
     setState(() {
       _isCaregiver = value;
     });
+  }
+
+  Future<void> registerUser() async {
+    AuthResult result;
+
+    if (_passwordController.text != _retypePasswordController.text) {
+      setState(() {
+        message = "Passwords are not the same";
+      });
+      return;
+    }
+
+    setState(() {
+      buttonEnabled = false;
+    });
+
+    try {
+      result = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } on Exception catch (e) {
+      setState(() {
+        message = getExceptionMessage(e);
+      });
+    }
+
+    if (result != null) {
+      setUserRole(result.user);
+    } else
+      setState(() {
+        buttonEnabled = true;
+      });
+  }
+
+  Future<void> setUserRole(FirebaseUser user) async {
+    await _firestore.collection('users').document().setData({
+      "userId": user.uid,
+      "role": _isCaregiver ? "caregiver" : "supervisor"
+    });
+
+    setState(() {
+      buttonEnabled = true;
+    });
+
+    if (_isCaregiver)
+      Navigator.pushNamed(context, "/caregiverPanel");
+    else
+      Navigator.pushNamed(context, "/supervisorPanel");
+  }
+
+  String getExceptionMessage(Exception e) {
+    String exceptionMessage = e.toString();
+    int startIndex = exceptionMessage.indexOf(",");
+    exceptionMessage = exceptionMessage.substring(startIndex + 1);
+    int endIndex = exceptionMessage.indexOf(",");
+    return exceptionMessage = exceptionMessage.substring(0, endIndex - 1);
   }
 }

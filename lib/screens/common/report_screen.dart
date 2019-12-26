@@ -4,6 +4,7 @@ import 'package:mrc/data/question_model.dart';
 import 'package:mrc/data/report_model.dart';
 import 'package:mrc/screens/common/single_screen.dart';
 import 'package:mrc/widgets/card_default.dart';
+import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/radio_input.dart';
 import 'package:mrc/widgets/report_card.dart';
 import 'package:mrc/widgets/text_field_default.dart';
@@ -49,12 +50,22 @@ class _ReportScreenState extends State<ReportScreen> {
         child: Container(
           width: 0.9 * screenWidth,
           child: ListView.builder(
-            itemCount: questions.length + 1,
+            itemCount: widget.arguments.readOnly
+                ? questions.length + 1
+                : questions.length + 2,
             itemBuilder: (BuildContext context, int index) {
               if (index == 0)
                 return ReportCard(
                     onPress: () {}, report: widget.arguments.report);
-              else {
+              if (!widget.arguments.readOnly && index == questions.length + 1) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 30),
+                  child: PrimaryButton(
+                    text: "Save",
+                    onPressed: saveReport,
+                  ),
+                );
+              } else {
                 Question question = questions.elementAt(index - 1);
                 return CardDefault(
                   margin: EdgeInsets.only(bottom: 30),
@@ -100,5 +111,9 @@ class _ReportScreenState extends State<ReportScreen> {
       default:
         return Container();
     }
+  }
+
+  void saveReport() {
+    Navigator.pop(context);
   }
 }

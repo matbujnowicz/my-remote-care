@@ -4,27 +4,30 @@ import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/patient_model.dart';
 import 'package:mrc/data/report_model.dart';
 import 'package:mrc/data/sample_reports.dart';
-import 'package:mrc/data/statiscis_generator.dart';
-import 'package:mrc/screens/supervisor/browse_screen.dart';
-import 'package:mrc/screens/supervisor/edit_patient_info.dart';
-import 'package:mrc/screens/supervisor/manage_screen.dart';
-import 'package:mrc/screens/supervisor/statiscits_screen.dart';
+import 'package:mrc/screens/caregiver/dashboard_screen.dart';
+import 'package:mrc/screens/caregiver/patient_info_screen.dart';
+import 'package:mrc/screens/caregiver/supervisor_screen.dart';
 
-class SupervisorPanel extends StatefulWidget {
-  SupervisorPanel({
+class CaregiverPanel extends StatefulWidget {
+  CaregiverPanel({
     Key key,
   }) : super(key: key);
 
   @override
-  _SupervisorPanelState createState() => _SupervisorPanelState();
+  _CaregiverPanelState createState() => _CaregiverPanelState();
 }
 
-class _SupervisorPanelState extends State<SupervisorPanel> {
+class _CaregiverPanelState extends State<CaregiverPanel> {
   int _screenIndex = 0;
   List<ReportModel> _readyReports = readyReports();
-  List<ReportModel> _notReadyReports = pendingReports();
-  final PatientModel patient = PatientModel();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final PatientModel patient = PatientModel(
+      name: "Walery",
+      surname: "Sudack",
+      height: "190",
+      weight: "55",
+      yearOfBirth: "1920");
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,9 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
                 child: Stack(children: <Widget>[
                   Positioned(
                     child: IconButton(
-                      onPressed: logOut,
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, "/");
+                      },
                       icon: Icon(Icons.power_settings_new),
                       color: accentColor,
                       iconSize: 35,
@@ -103,7 +108,7 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
         ),
         IconButton(
           iconSize: 35,
-          icon: Icon(Icons.center_focus_weak),
+          icon: Icon(Icons.person),
           onPressed: () {
             _changeScreen(1);
           },
@@ -111,19 +116,11 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
         ),
         IconButton(
           iconSize: 35,
-          icon: Icon(Icons.person),
+          icon: Icon(Icons.loupe),
           onPressed: () {
             _changeScreen(2);
           },
           color: _screenIndex == 2 ? accentColor : primaryGreenColor,
-        ),
-        IconButton(
-          iconSize: 35,
-          icon: Icon(Icons.insert_chart),
-          onPressed: () {
-            _changeScreen(3);
-          },
-          color: _screenIndex == 3 ? accentColor : primaryGreenColor,
         ),
       ],
     );
@@ -132,13 +129,11 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
   String _getScreenName() {
     switch (_screenIndex) {
       case 0:
-        return "Browse reports";
+        return "Dashboard";
       case 1:
-        return "Manage reports";
+        return "Patient info";
       case 2:
-        return "Edit patient info";
-      case 3:
-        return "Statistics";
+        return "Supervisor";
       default:
         return "";
     }
@@ -147,18 +142,11 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
   Widget _getScreenWidget() {
     switch (_screenIndex) {
       case 0:
-        return BrowseScreen(_readyReports);
+        return DashboardScreen(_readyReports);
       case 1:
-        return ManageScreen(
-          reports: _notReadyReports,
-          removeReport: _removeReport,
-          addReport: _addReport,
-        );
+        return PatientInfoScreen(patient);
       case 2:
-        return EditPatientInfoScreen(patient);
-      case 3:
-        return StatisticsScreen(
-            _readyReports, generateStatistics(_readyReports));
+        return SupervisorScreen();
       default:
         return Container();
     }
@@ -168,18 +156,6 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
     if (newScreenIndex == _screenIndex) return;
     setState(() {
       _screenIndex = newScreenIndex;
-    });
-  }
-
-  void _removeReport(ReportModel report) {
-    setState(() {
-      _notReadyReports.remove(report);
-    });
-  }
-
-  void _addReport(ReportModel report) {
-    setState(() {
-      _notReadyReports.add(report);
     });
   }
 

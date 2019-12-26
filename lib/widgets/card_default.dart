@@ -4,9 +4,14 @@ class CardDefault extends StatelessWidget {
   final Widget child;
   final EdgeInsets margin;
   final EdgeInsets padding;
+  final Color color;
 
-  CardDefault(
-      {this.child, this.margin, this.padding = const EdgeInsets.all(20)});
+  CardDefault({
+    this.child,
+    this.margin,
+    this.padding = const EdgeInsets.all(20),
+    this.color = Colors.white,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,7 @@ class CardDefault extends StatelessWidget {
       width: screenWidth * 0.9,
       child: child,
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: color,
         borderRadius: BorderRadius.circular(10),
       ),
     );

@@ -54,14 +54,14 @@ class ReportCard extends StatelessWidget {
       return IconButton(
         iconSize: 35,
         icon: Icon(Icons.check_circle_outline),
-        onPressed: () {},
+        onPressed: onPress,
         color: primaryGreenColor,
       );
     else
       return IconButton(
         iconSize: 35,
         icon: Icon(Icons.error_outline),
-        onPressed: () {},
+        onPressed: onPress,
         color: accentColor,
       );
   }

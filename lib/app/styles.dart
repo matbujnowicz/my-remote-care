@@ -29,6 +29,14 @@ final whiteFont = TextStyle(
   letterSpacing: 0.5,
 );
 
+final whiteBoldFont = TextStyle(
+  color: Colors.white,
+  fontSize: 18.0,
+  fontFamily: 'Roboto',
+  letterSpacing: 0.5,
+  fontWeight: FontWeight.bold,
+);
+
 final accentFont = TextStyle(
   color: accentColor,
   fontSize: 18.0,
@@ -48,5 +56,12 @@ final greenBoldFont = TextStyle(
   fontSize: 18.0,
   fontFamily: 'Roboto',
   fontWeight: FontWeight.bold,
+  letterSpacing: 0.5,
+);
+
+final redSmallFont = TextStyle(
+  color: Colors.red,
+  fontSize: 12.0,
+  fontFamily: 'Roboto',
   letterSpacing: 0.5,
 );

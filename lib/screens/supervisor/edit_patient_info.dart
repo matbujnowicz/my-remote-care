@@ -27,8 +27,6 @@ class _EditPatientInfoScreenState extends State<EditPatientInfoScreen> {
   String height = "";
   String weight = "";
 
-  List<TextEditingController> allControllers;
-
   @override
   void initState() {
     super.initState();

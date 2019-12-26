@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/widgets/card_default.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/text_button.dart';
 import 'package:mrc/widgets/text_field_default.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({
@@ -15,8 +17,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenScreenState extends State<LoginScreen> {
-  TextEditingController _emailController;
-  TextEditingController _passwordController;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+  final _firestore = Firestore.instance;
+  String message = "";
+  bool buttonEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +68,7 @@ class _LoginScreenScreenState extends State<LoginScreen> {
                     margin: const EdgeInsets.only(bottom: 20),
                     child: PrimaryButton(
                       text: "Log in",
-                      onPressed: _handleLogin,
+                      onPressed: buttonEnabled ? signIn : null,
                     ),
                   ),
                   Container(
@@ -103,17 +109,84 @@ class _LoginScreenScreenState extends State<LoginScreen> {
             controller: _passwordController,
             hint: "Password",
             obscureText: true,
-          )
+          ),
+          Text(
+            message,
+            style: redSmallFont,
+          ),
         ],
       ),
     );
   }
 
-  void _handleLogin() {
-    Navigator.pushNamed(context, "/supervisorPanel");
-  }
-
   void _handleGoToRegister() {
     Navigator.pushNamed(context, "/register");
+  }
+
+  Future<void> signIn() async {
+    AuthResult result;
+
+    setState(() {
+      buttonEnabled = false;
+    });
+
+    try {
+      result = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } on Exception catch (e) {
+      setState(() {
+        message = getExceptionMessage(e);
+      });
+    }
+
+    if (result != null) {
+      getUserRole(result.user);
+    } else
+      setState(() {
+        buttonEnabled = true;
+      });
+  }
+
+  Future<void> getUserRole(FirebaseUser user) async {
+    _firestore
+        .collection('users')
+        .where("userId", isEqualTo: user.uid)
+        .snapshots()
+        .listen((data) => data.documents.forEach((doc) => handleUserRole(doc)));
+    setState(() {
+      message = "User not found";
+      buttonEnabled = true;
+    });
+  }
+
+  void handleUserRole(DocumentSnapshot doc) {
+    setState(() {
+      buttonEnabled = false;
+    });
+    String role = doc["role"];
+    if (role == null || (role != "supervisor" && role != "caregiver")) {
+      _auth.signOut();
+      setState(() {
+        message = "This user is neither supervisor nor caregiver";
+      });
+    } else {
+      if (role == "caregiver")
+        Navigator.pushNamed(context, "/caregiverPanel");
+      else if (role == "supervisor")
+        Navigator.pushNamed(context, "/supervisorPanel");
+    }
+    setState(() {
+      buttonEnabled = true;
+    });
+  }
+
+  String getExceptionMessage(Exception e) {
+    String exceptionMessage = e.toString();
+    int startIndex = exceptionMessage.indexOf(",");
+    exceptionMessage = exceptionMessage.substring(startIndex + 1);
+    int endIndex = exceptionMessage.indexOf(",");
+    return exceptionMessage = exceptionMessage.substring(0, endIndex - 1);
   }
 }
