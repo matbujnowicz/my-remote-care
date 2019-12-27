@@ -198,9 +198,9 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
     });
 
     if (_isCaregiver)
-      Navigator.pushNamed(context, "/caregiverPanel");
+      Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
     else
-      Navigator.pushNamed(context, "/supervisorPanel");
+      Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
   }
 
   String getExceptionMessage(Exception e) {

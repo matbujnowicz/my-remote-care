@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/patient_model.dart';
 import 'package:mrc/data/report_model.dart';
-import 'package:mrc/data/sample_reports.dart';
 import 'package:mrc/data/statiscis_generator.dart';
 import 'package:mrc/screens/supervisor/browse_screen.dart';
 import 'package:mrc/screens/supervisor/edit_patient_info.dart';
@@ -11,7 +10,10 @@ import 'package:mrc/screens/supervisor/manage_screen.dart';
 import 'package:mrc/screens/supervisor/statiscits_screen.dart';
 
 class SupervisorPanel extends StatefulWidget {
+  final FirebaseUser user;
+
   SupervisorPanel({
+    this.user,
     Key key,
   }) : super(key: key);
 
@@ -21,10 +23,18 @@ class SupervisorPanel extends StatefulWidget {
 
 class _SupervisorPanelState extends State<SupervisorPanel> {
   int _screenIndex = 0;
-  List<ReportModel> _readyReports = readyReports();
-  List<ReportModel> _notReadyReports = pendingReports();
+  List<ReportModel> _reports = List();
   final PatientModel patient = PatientModel();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    setState(() {
+      ReportModel.getReportsFromFirebase(widget.user.uid, _reports);
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,20 +155,23 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
   }
 
   Widget _getScreenWidget() {
+    if (_reports == null) return Container();
     switch (_screenIndex) {
       case 0:
-        return BrowseScreen(_readyReports);
+        return BrowseScreen(ReportModel.submittedReports(_reports));
       case 1:
         return ManageScreen(
-          reports: _notReadyReports,
-          removeReport: _removeReport,
-          addReport: _addReport,
+          reports: ReportModel.scheduledReports(_reports),
+          user: widget.user,
+          resetState: () {
+            setState(() {});
+          },
         );
       case 2:
         return EditPatientInfoScreen(patient);
       case 3:
         return StatisticsScreen(
-            _readyReports, generateStatistics(_readyReports));
+            generateStatistics(ReportModel.submittedReports(_reports)));
       default:
         return Container();
     }
@@ -168,18 +181,6 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
     if (newScreenIndex == _screenIndex) return;
     setState(() {
       _screenIndex = newScreenIndex;
-    });
-  }
-
-  void _removeReport(ReportModel report) {
-    setState(() {
-      _notReadyReports.remove(report);
-    });
-  }
-
-  void _addReport(ReportModel report) {
-    setState(() {
-      _notReadyReports.add(report);
     });
   }
 

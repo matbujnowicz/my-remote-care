@@ -9,10 +9,12 @@ import 'package:mrc/screens/supervisor/supervisor_panel.dart';
 Map<String, Widget Function(BuildContext)> routes = {
   '/': (context) => LoginScreen(),
   '/register': (context) => RegisterScreen(),
-  '/supervisorPanel': (context) => SupervisorPanel(),
+  '/supervisorPanel': (context) =>
+      SupervisorPanel(user: ModalRoute.of(context).settings.arguments),
   '/reportScreen': (context) =>
       ReportScreen(arguments: ModalRoute.of(context).settings.arguments),
   '/addReportScreen': (context) =>
-      AddReportScreen(addReport: ModalRoute.of(context).settings.arguments),
-  '/caregiverPanel': (context) => CaregiverPanel(),
+      AddReportScreen(arguments: ModalRoute.of(context).settings.arguments),
+  '/caregiverPanel': (context) =>
+      CaregiverPanel(user: ModalRoute.of(context).settings.arguments),
 };

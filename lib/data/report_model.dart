@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mrc/data/question_model.dart';
 
 enum ReportType {
@@ -13,6 +14,7 @@ class ReportModel {
   Duration duration = Duration(hours: 1);
   ReportType reportType;
   List<Question> questions;
+  String reportId;
 
   ReportModel({
     this.scheduledDate,
@@ -20,6 +22,7 @@ class ReportModel {
     this.submitted,
     this.submissionDate,
     this.questions,
+    this.reportId,
   }) {
     if (questions == null)
       switch (reportType) {
@@ -65,6 +68,19 @@ class ReportModel {
     }
   }
 
+  static ReportType getTypeFromString(String type) {
+    switch (type) {
+      case "Diet":
+        return ReportType.Diet;
+      case "Mood":
+        return ReportType.Mood;
+      case "Medicines":
+        return ReportType.Medicines;
+      default:
+        return null;
+    }
+  }
+
   static List<Question> dietQuestions() {
     return [
       Question(questionType: QuestionType.Text, question: "Breakfast"),
@@ -91,5 +107,67 @@ class ReportModel {
           questionType: QuestionType.Text,
           question: "What medicines has patient taken today?"),
     ];
+  }
+
+  static Future<void> addReportToFirebase(
+      ReportModel report, String userId) async {
+    final firestore = Firestore.instance;
+    await firestore.collection('reports').document().setData({
+      "reportType": getName(report.reportType),
+      "scheduledDate": report.scheduledDate,
+      "userId": userId,
+    });
+  }
+
+  static void getReportsFromFirebase(String userId, List<ReportModel> reports) {
+    final firestore = Firestore.instance;
+    firestore
+        .collection('reports')
+        .where("userId", isEqualTo: userId)
+        .snapshots()
+        .listen((data) => addReportsToList(data, reports));
+  }
+
+  static void addReportsToList(QuerySnapshot data, List<ReportModel> reports) {
+    reports.clear();
+    data.documents.forEach((doc) => addReportToList(doc, reports));
+  }
+
+  static void addReportToList(DocumentSnapshot doc, List<ReportModel> reports) {
+    final newReport = ReportModel(
+      reportType: getTypeFromString(doc["reportType"]),
+      submitted: doc["submitted"],
+      scheduledDate: doc["scheduledDate"].toDate(),
+      submissionDate: doc["submissionDate"],
+      reportId: doc.documentID,
+    );
+    int index = 0;
+    if (doc["answers"] != null)
+      doc["answers"].forEach((answer) {
+        newReport.questions[index] = answer;
+        index++;
+      });
+    reports.add(newReport);
+  }
+
+  static Future<void> removeReportFromFirebase(String reportId) async {
+    final firestore = Firestore.instance;
+    await firestore.document('reports/' + reportId).delete();
+  }
+
+  static List<ReportModel> scheduledReports(List<ReportModel> reports) {
+    List<ReportModel> scheduledReports = List();
+    reports.forEach((report) {
+      if (report.submitted == null) scheduledReports.add(report);
+    });
+    return scheduledReports;
+  }
+
+  static List<ReportModel> submittedReports(List<ReportModel> reports) {
+    List<ReportModel> submittedReports = List();
+    reports.forEach((report) {
+      if (report.submitted != null) submittedReports.add(report);
+    });
+    return submittedReports;
   }
 }

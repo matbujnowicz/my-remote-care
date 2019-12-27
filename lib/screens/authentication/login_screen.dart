@@ -25,6 +25,13 @@ class _LoginScreenScreenState extends State<LoginScreen> {
   bool buttonEnabled = true;
 
   @override
+  void initState() {
+    _emailController.text = "s@s.com";
+    _passwordController.text = "123456";
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -154,14 +161,15 @@ class _LoginScreenScreenState extends State<LoginScreen> {
         .collection('users')
         .where("userId", isEqualTo: user.uid)
         .snapshots()
-        .listen((data) => data.documents.forEach((doc) => handleUserRole(doc)));
+        .listen((data) =>
+            data.documents.forEach((doc) => handleUserRole(doc, user)));
     setState(() {
       message = "User not found";
       buttonEnabled = true;
     });
   }
 
-  void handleUserRole(DocumentSnapshot doc) {
+  void handleUserRole(DocumentSnapshot doc, FirebaseUser user) {
     setState(() {
       buttonEnabled = false;
     });
@@ -173,9 +181,9 @@ class _LoginScreenScreenState extends State<LoginScreen> {
       });
     } else {
       if (role == "caregiver")
-        Navigator.pushNamed(context, "/caregiverPanel");
+        Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
       else if (role == "supervisor")
-        Navigator.pushNamed(context, "/supervisorPanel");
+        Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
     }
     setState(() {
       buttonEnabled = true;

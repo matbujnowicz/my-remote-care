@@ -9,7 +9,10 @@ import 'package:mrc/screens/caregiver/patient_info_screen.dart';
 import 'package:mrc/screens/caregiver/supervisor_screen.dart';
 
 class CaregiverPanel extends StatefulWidget {
+  final FirebaseUser user;
+
   CaregiverPanel({
+    this.user,
     Key key,
   }) : super(key: key);
 
@@ -19,7 +22,7 @@ class CaregiverPanel extends StatefulWidget {
 
 class _CaregiverPanelState extends State<CaregiverPanel> {
   int _screenIndex = 0;
-  List<ReportModel> _readyReports = readyReports();
+  List<ReportModel> _reports = List();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final PatientModel patient = PatientModel(
@@ -28,6 +31,15 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
       height: "190",
       weight: "55",
       yearOfBirth: "1920");
+
+  @override
+  void initState() {
+    setState(() {
+      ReportModel.getReportsFromFirebase(widget.user.uid, _reports);
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +154,7 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   Widget _getScreenWidget() {
     switch (_screenIndex) {
       case 0:
-        return DashboardScreen(_readyReports);
+        return DashboardScreen(ReportModel.scheduledReports(_reports));
       case 1:
         return PatientInfoScreen(patient);
       case 2:

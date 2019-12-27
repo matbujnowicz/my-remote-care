@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/report_model.dart';
@@ -9,10 +10,18 @@ import 'package:mrc/widgets/dropdown_default.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/report_card.dart';
 
-class AddReportScreen extends StatefulWidget {
-  final Function addReport;
+class AddReportScreenArguments {
+  final FirebaseUser user;
 
-  AddReportScreen({Key key, this.addReport}) : super(key: key);
+  AddReportScreenArguments({this.user});
+}
+
+class AddReportScreen extends StatefulWidget {
+  final AddReportScreenArguments arguments;
+  AddReportScreen({
+    Key key,
+    this.arguments,
+  }) : super(key: key);
 
   @override
   _AddReportScreenState createState() => _AddReportScreenState();
@@ -137,8 +146,11 @@ class _AddReportScreenState extends State<AddReportScreen> {
     isButtonActive();
   }
 
-  void addReport(BuildContext context) {
-    widget.addReport(report);
+  Future<void> addReport(BuildContext context) async {
+    setState(() {
+      buttonEnabled = false;
+    });
+    await ReportModel.addReportToFirebase(report, widget.arguments.user.uid);
     Navigator.pop(context);
   }
 

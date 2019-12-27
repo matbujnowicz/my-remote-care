@@ -18,6 +18,7 @@ Map<ReportType, bool> generateExistingTypes(List<ReportModel> reports) {
 
 Map<String, String> generateStatistics(List<ReportModel> reports) {
   Map<String, String> statistics = Map();
+  if (reports.length == 0) return statistics;
   Map<ReportType, bool> existingTypes = generateExistingTypes(reports);
 
   statistics.putIfAbsent(

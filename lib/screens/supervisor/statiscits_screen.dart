@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
-import 'package:mrc/data/report_model.dart';
 import 'package:mrc/widgets/card_default.dart';
 
 class StatisticsScreen extends StatelessWidget {
-  final List<ReportModel> reports;
   final Map<String, String> statistics;
 
-  StatisticsScreen(this.reports, this.statistics);
+  StatisticsScreen(this.statistics);
 
   @override
   Widget build(BuildContext context) {

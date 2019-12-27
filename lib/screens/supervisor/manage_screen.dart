@@ -1,15 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/data/report_model.dart';
 import 'package:mrc/screens/common/report_screen.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/report_card.dart';
+import 'package:mrc/screens/supervisor/add_report_screen.dart';
 
 class ManageScreen extends StatelessWidget {
   final List<ReportModel> reports;
-  final Function removeReport;
-  final Function addReport;
+  final FirebaseUser user;
+  final Function resetState;
 
-  ManageScreen({this.reports, this.addReport, this.removeReport});
+  ManageScreen({
+    this.reports,
+    this.user,
+    this.resetState,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +56,12 @@ class ManageScreen extends StatelessWidget {
   }
 
   void addReportScreen(BuildContext context) {
-    Navigator.pushNamed(context, '/addReportScreen', arguments: addReport);
+    Navigator.pushNamed(context, '/addReportScreen',
+        arguments: AddReportScreenArguments(user: user));
+  }
+
+  void removeReport(ReportModel report) async {
+    await ReportModel.removeReportFromFirebase(report.reportId);
+    resetState();
   }
 }
