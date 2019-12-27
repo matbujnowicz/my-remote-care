@@ -17,24 +17,26 @@ Map<ReportType, bool> generateExistingTypes(List<ReportModel> reports) {
 }
 
 Map<String, String> generateStatistics(List<ReportModel> reports) {
+  final submittedReports = getSubmitterReports(reports);
   Map<String, String> statistics = Map();
   if (reports.length == 0) return statistics;
-  Map<ReportType, bool> existingTypes = generateExistingTypes(reports);
+  Map<ReportType, bool> existingTypes = generateExistingTypes(submittedReports);
 
   statistics.putIfAbsent(
       "Caregiver effectiveness", () => effectiveness(reports));
 
   if (existingTypes[ReportType.Diet]) {
-    statistics.putIfAbsent("Favourite meal", () => favouriteMeal(reports));
+    statistics.putIfAbsent(
+        "Favourite meal", () => favouriteMeal(submittedReports));
   }
 
   if (existingTypes[ReportType.Mood]) {
-    statistics.putIfAbsent("Average mood", () => averageMood(reports));
+    statistics.putIfAbsent("Average mood", () => averageMood(submittedReports));
   }
 
   if (existingTypes[ReportType.Medicines]) {
-    statistics.putIfAbsent(
-        "Number of medicines reports", () => medicinesReportsCount(reports));
+    statistics.putIfAbsent("Number of medicines reports",
+        () => medicinesReportsCount(submittedReports));
   }
 
   return statistics;
@@ -102,4 +104,12 @@ String effectiveness(List<ReportModel> reports) {
   submittedReports *= 100;
 
   return "${submittedReports.floor()}%".toString();
+}
+
+List<ReportModel> getSubmitterReports(List<ReportModel> reports) {
+  List<ReportModel> submittedReports = List();
+  reports.forEach((report) {
+    if (report.submitted) submittedReports.add(report);
+  });
+  return submittedReports;
 }

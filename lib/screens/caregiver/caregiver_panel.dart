@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/patient_model.dart';
 import 'package:mrc/data/report_model.dart';
-import 'package:mrc/data/sample_reports.dart';
 import 'package:mrc/screens/caregiver/dashboard_screen.dart';
 import 'package:mrc/screens/caregiver/patient_info_screen.dart';
 import 'package:mrc/screens/caregiver/supervisor_screen.dart';
 
-class CaregiverPanel extends StatefulWidget {
+class CaregiverPanelArguments {
   final FirebaseUser user;
+  final String supervisorId;
 
+  CaregiverPanelArguments({this.supervisorId, this.user});
+}
+
+class CaregiverPanel extends StatefulWidget {
+  final CaregiverPanelArguments arguments;
   CaregiverPanel({
-    this.user,
+    this.arguments,
     Key key,
   }) : super(key: key);
 
@@ -24,6 +29,8 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   int _screenIndex = 0;
   List<ReportModel> _reports = List();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  String supervisorId;
+  bool initialResetState = true;
 
   final PatientModel patient = PatientModel(
       name: "Walery",
@@ -35,7 +42,11 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   @override
   void initState() {
     setState(() {
-      ReportModel.getReportsFromFirebase(widget.user.uid, _reports);
+      supervisorId = widget.arguments.supervisorId;
+      if (supervisorId != null)
+        ReportModel.getReportsFromFirebase(supervisorId, _reports, resetState);
+      else
+        _screenIndex = 2;
     });
 
     super.initState();
@@ -154,11 +165,14 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   Widget _getScreenWidget() {
     switch (_screenIndex) {
       case 0:
-        return DashboardScreen(ReportModel.scheduledReports(_reports));
+        return DashboardScreen(
+            reports: ReportModel.scheduledReports(_reports),
+            resetState: resetState);
       case 1:
         return PatientInfoScreen(patient);
       case 2:
-        return SupervisorScreen();
+        return SupervisorScreen(
+            supervisorId: supervisorId, user: widget.arguments.user);
       default:
         return Container();
     }
@@ -174,5 +188,12 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   Future<void> logOut() async {
     await _auth.signOut();
     Navigator.pushReplacementNamed(context, "/");
+  }
+
+  void resetState() {
+    if (initialResetState)
+      setState(() {
+        initialResetState = false;
+      });
   }
 }

@@ -1,16 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/widgets/card_default.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/text_field_default.dart';
 
+import 'caregiver_panel.dart';
+
 class SupervisorScreen extends StatefulWidget {
+  final String supervisorId;
+  final FirebaseUser user;
+  SupervisorScreen({this.supervisorId, this.user});
+
   @override
   _SupervisorScreenState createState() => _SupervisorScreenState();
 }
 
 class _SupervisorScreenState extends State<SupervisorScreen> {
   bool changesMade = false;
+  final _firestore = Firestore.instance;
+  String message = "";
 
   final emailController = TextEditingController();
 
@@ -53,6 +63,10 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
                       hint: "Email",
                     ),
                   ),
+                  Text(
+                    message,
+                    style: redSmallFont,
+                  ),
                 ],
               ),
             );
@@ -70,12 +84,11 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
   }
 
   void saveEmail() {
-    //TODO database save
-
     setState(() {
       changesMade = false;
       email = emailController.text;
     });
+    saveSupervisorIdByEmail(emailController.text);
   }
 
   void addOnChangeListeners() {
@@ -86,8 +99,49 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
   }
 
   void intializeValues() {
-    emailController.text = "arek@buziaczek.edu";
-    email = "arek@buziaczek.edu";
-    setState(() {});
+    if (widget.supervisorId != null) {
+      getUserMail(widget.supervisorId);
+    }
+  }
+
+  Future<void> getUserMail(String userId) async {
+    _firestore
+        .collection('users')
+        .where("userId", isEqualTo: userId)
+        .snapshots()
+        .listen((data) => data.documents.forEach((doc) => setState(() {
+              email = doc["mail"];
+              emailController.text = doc["mail"];
+            })));
+  }
+
+  void saveSupervisorIdByEmail(String mail) {
+    _firestore
+        .collection('users')
+        .where("mail", isEqualTo: mail)
+        .snapshots()
+        .listen(
+            (data) => data.documents.forEach((doc) => setSupervisorId(doc)));
+  }
+
+  void setSupervisorId(DocumentSnapshot supervisorDoc) {
+    if (supervisorDoc["role"] != "supervisor") {
+      setState(() {
+        message = "This email does not belong to a supervisor";
+      });
+      return;
+    }
+    _firestore
+        .collection('users')
+        .where("userId", isEqualTo: widget.user.uid)
+        .snapshots()
+        .listen((data) => data.documents.forEach((doc) {
+              _firestore
+                  .document('users/' + doc.documentID)
+                  .updateData({"supervisorId": supervisorDoc["userId"]});
+            }));
+    Navigator.pushReplacementNamed(context, "/caregiverPanel",
+        arguments: CaregiverPanelArguments(
+            user: widget.user, supervisorId: supervisorDoc["userId"]));
   }
 }

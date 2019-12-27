@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/data/report_model.dart';
 import 'package:mrc/screens/common/report_screen.dart';
@@ -6,7 +7,12 @@ import 'package:mrc/widgets/report_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   final List<ReportModel> reports;
-  DashboardScreen(this.reports);
+  final Function resetState;
+  DashboardScreen({
+    this.reports,
+    this.resetState,
+  });
+  final firestore = Firestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +23,18 @@ class DashboardScreen extends StatelessWidget {
       child: ListView.builder(
         itemCount: reports.length,
         itemBuilder: (BuildContext context, int index) {
-          if (index == 0)
+          ReportModel currentReport = reports.elementAt(index);
+          if (examineReport(currentReport))
             return FillReportCard(
-              report: reports.elementAt(index),
+              report: currentReport,
               onPress: () {
-                fillReport(reports.elementAt(index), context);
+                fillReport(currentReport, context);
               },
             );
           return ReportCard(
-            report: reports.elementAt(index),
+            report: currentReport,
             onPress: () {
-              viewReport(reports.elementAt(index), context);
+              viewReport(currentReport, context);
             },
           );
         },
@@ -43,5 +50,22 @@ class DashboardScreen extends StatelessWidget {
   void fillReport(ReportModel report, BuildContext context) {
     Navigator.pushNamed(context, "/reportScreen",
         arguments: ReportScreenArguments(report: report, readOnly: false));
+  }
+
+  bool examineReport(ReportModel report) {
+    if (DateTime.now().compareTo(report.scheduledDate) >= 0) {
+      if (DateTime.now().compareTo(report.scheduledDate.add(report.duration)) >
+          0)
+        markReportAsNotSubmitted(report);
+      else
+        return true;
+    }
+    return false;
+  }
+
+  void markReportAsNotSubmitted(ReportModel report) async {
+    await firestore
+        .document('reports/' + report.reportId)
+        .updateData({"submitted": false});
   }
 }

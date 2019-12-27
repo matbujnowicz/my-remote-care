@@ -119,18 +119,21 @@ class ReportModel {
     });
   }
 
-  static void getReportsFromFirebase(String userId, List<ReportModel> reports) {
+  static void getReportsFromFirebase(
+      String userId, List<ReportModel> reports, Function resetState) {
     final firestore = Firestore.instance;
     firestore
         .collection('reports')
         .where("userId", isEqualTo: userId)
         .snapshots()
-        .listen((data) => addReportsToList(data, reports));
+        .listen((data) => addReportsToList(data, reports, resetState));
   }
 
-  static void addReportsToList(QuerySnapshot data, List<ReportModel> reports) {
+  static void addReportsToList(
+      QuerySnapshot data, List<ReportModel> reports, Function resetState) {
     reports.clear();
     data.documents.forEach((doc) => addReportToList(doc, reports));
+    resetState();
   }
 
   static void addReportToList(DocumentSnapshot doc, List<ReportModel> reports) {
@@ -138,13 +141,14 @@ class ReportModel {
       reportType: getTypeFromString(doc["reportType"]),
       submitted: doc["submitted"],
       scheduledDate: doc["scheduledDate"].toDate(),
-      submissionDate: doc["submissionDate"],
+      submissionDate:
+          doc["submissionDate"] == null ? null : doc["submissionDate"].toDate(),
       reportId: doc.documentID,
     );
     int index = 0;
     if (doc["answers"] != null)
       doc["answers"].forEach((answer) {
-        newReport.questions[index] = answer;
+        newReport.questions[index].answer = answer;
         index++;
       });
     reports.add(newReport);

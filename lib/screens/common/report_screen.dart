@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/question_model.dart';
@@ -37,6 +38,7 @@ class _ReportScreenState extends State<ReportScreen> {
     setState(() {
       questions = widget.arguments.report.questions;
     });
+    questions.forEach((question) => controllers.add(TextEditingController()));
     super.initState();
   }
 
@@ -79,7 +81,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           style: greenBoldFont,
                         ),
                       ),
-                      buildAnswerField(question)
+                      buildAnswerField(question, index - 1)
                     ],
                   ),
                 );
@@ -91,10 +93,9 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  Widget buildAnswerField(Question question) {
-    TextEditingController controller = TextEditingController();
+  Widget buildAnswerField(Question question, int index) {
+    TextEditingController controller = controllers.elementAt(index);
     controller.text = question.answer == null ? "" : question.answer.toString();
-    controllers.add(controller);
 
     switch (question.questionType) {
       case QuestionType.Text:
@@ -113,7 +114,26 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-  void saveReport() {
+  void saveReport() async {
+    if (!allFieldsFilled()) return;
+    DateTime now = DateTime.now();
+    List<dynamic> answers = List();
+    controllers.forEach((controller) => answers.add(controller.text));
+    await Firestore.instance
+        .document('reports/' + widget.arguments.report.reportId)
+        .updateData({
+      "submitted": true,
+      "submissionDate": now,
+      "answers": answers,
+    });
     Navigator.pop(context);
+  }
+
+  bool allFieldsFilled() {
+    bool result = true;
+    controllers.forEach((controller) {
+      if (controller.text == null || controller.text == "") result = false;
+    });
+    return result;
   }
 }

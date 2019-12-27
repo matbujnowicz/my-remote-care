@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
+import 'package:mrc/screens/caregiver/caregiver_panel.dart';
 import 'package:mrc/widgets/card_default.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/text_button.dart';
@@ -26,7 +29,7 @@ class _LoginScreenScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    _emailController.text = "s@s.com";
+    _emailController.text = "c@c.com";
     _passwordController.text = "123456";
     super.initState();
   }
@@ -163,10 +166,12 @@ class _LoginScreenScreenState extends State<LoginScreen> {
         .snapshots()
         .listen((data) =>
             data.documents.forEach((doc) => handleUserRole(doc, user)));
-    setState(() {
-      message = "User not found";
-      buttonEnabled = true;
-    });
+    Timer(
+        Duration(seconds: 1),
+        () => setState(() {
+              message = "User not found";
+              buttonEnabled = true;
+            }));
   }
 
   void handleUserRole(DocumentSnapshot doc, FirebaseUser user) {
@@ -181,7 +186,9 @@ class _LoginScreenScreenState extends State<LoginScreen> {
       });
     } else {
       if (role == "caregiver")
-        Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
+        Navigator.pushNamed(context, "/caregiverPanel",
+            arguments: CaregiverPanelArguments(
+                user: user, supervisorId: doc["supervisorId"]));
       else if (role == "supervisor")
         Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
     }

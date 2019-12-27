@@ -115,5 +115,6 @@ class _RadioInputState extends State<RadioInput> {
     setState(() {
       groupValue = value;
     });
+    widget.controller.text = value.toString();
   }
 }

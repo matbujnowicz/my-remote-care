@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
+import 'package:mrc/screens/caregiver/caregiver_panel.dart';
 import 'package:mrc/widgets/card_default.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/text_button.dart';
@@ -180,17 +181,18 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
     }
 
     if (result != null) {
-      setUserRole(result.user);
+      setUserData(result.user);
     } else
       setState(() {
         buttonEnabled = true;
       });
   }
 
-  Future<void> setUserRole(FirebaseUser user) async {
+  Future<void> setUserData(FirebaseUser user) async {
     await _firestore.collection('users').document().setData({
       "userId": user.uid,
-      "role": _isCaregiver ? "caregiver" : "supervisor"
+      "role": _isCaregiver ? "caregiver" : "supervisor",
+      "mail": _emailController.text,
     });
 
     setState(() {
@@ -198,7 +200,8 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
     });
 
     if (_isCaregiver)
-      Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
+      Navigator.pushNamed(context, "/caregiverPanel",
+          arguments: CaregiverPanelArguments(user: user));
     else
       Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
   }

@@ -26,11 +26,12 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
   List<ReportModel> _reports = List();
   final PatientModel patient = PatientModel();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool initialResetState = true;
 
   @override
   void initState() {
     setState(() {
-      ReportModel.getReportsFromFirebase(widget.user.uid, _reports);
+      ReportModel.getReportsFromFirebase(widget.user.uid, _reports, () {});
     });
 
     super.initState();
@@ -155,7 +156,6 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
   }
 
   Widget _getScreenWidget() {
-    if (_reports == null) return Container();
     switch (_screenIndex) {
       case 0:
         return BrowseScreen(ReportModel.submittedReports(_reports));
