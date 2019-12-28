@@ -9,8 +9,9 @@ class BrowseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    ReportModel.sortReports(reports, false);
 
+    final screenWidth = MediaQuery.of(context).size.width;
     return Container(
       width: screenWidth * 0.9,
       child: ListView.builder(

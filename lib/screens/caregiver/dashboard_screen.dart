@@ -56,16 +56,10 @@ class DashboardScreen extends StatelessWidget {
     if (DateTime.now().compareTo(report.scheduledDate) >= 0) {
       if (DateTime.now().compareTo(report.scheduledDate.add(report.duration)) >
           0)
-        markReportAsNotSubmitted(report);
+        ReportModel.updateReport(report.reportId, {"submitted": false});
       else
         return true;
     }
     return false;
-  }
-
-  void markReportAsNotSubmitted(ReportModel report) async {
-    await firestore
-        .document('reports/' + report.reportId)
-        .updateData({"submitted": false});
   }
 }

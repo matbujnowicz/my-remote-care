@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/report_model.dart';
+import 'package:mrc/data/user_model.dart';
 import 'package:mrc/screens/common/report_screen.dart';
 import 'package:mrc/screens/common/single_screen.dart';
 import 'package:mrc/widgets/card_default.dart';
@@ -11,7 +11,7 @@ import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/report_card.dart';
 
 class AddReportScreenArguments {
-  final FirebaseUser user;
+  final UserModel user;
 
   AddReportScreenArguments({this.user});
 }
@@ -150,7 +150,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
     setState(() {
       buttonEnabled = false;
     });
-    await ReportModel.addReportToFirebase(report, widget.arguments.user.uid);
+    await ReportModel.addReportToFirebase(report, widget.arguments.user.userId);
     Navigator.pop(context);
   }
 

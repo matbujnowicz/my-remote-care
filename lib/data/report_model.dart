@@ -133,6 +133,7 @@ class ReportModel {
       QuerySnapshot data, List<ReportModel> reports, Function resetState) {
     reports.clear();
     data.documents.forEach((doc) => addReportToList(doc, reports));
+    sortReports(reports, true);
     resetState();
   }
 
@@ -173,5 +174,27 @@ class ReportModel {
       if (report.submitted != null) submittedReports.add(report);
     });
     return submittedReports;
+  }
+
+  static void sortReports(List<ReportModel> reports, bool ascending) {
+    int length = reports.length - 1;
+    do {
+      for (int i = 0; i < length; i++) {
+        if (ascending ==
+            reports[i].scheduledDate.compareTo(reports[i + 1].scheduledDate) >
+                0) {
+          final tempReport = reports[i];
+          reports[i] = reports[i + 1];
+          reports[i + 1] = tempReport;
+        }
+      }
+      length--;
+    } while (length > 0);
+  }
+
+  static Future<void> updateReport(
+      String reportId, Map<String, dynamic> data) async {
+    final firestore = Firestore.instance;
+    await firestore.document('user/' + reportId).updateData(data);
   }
 }

@@ -11,10 +11,10 @@ Map<String, Widget Function(BuildContext)> routes = {
   '/register': (context) => RegisterScreen(),
   '/supervisorPanel': (context) =>
       SupervisorPanel(user: ModalRoute.of(context).settings.arguments),
+  '/caregiverPanel': (context) =>
+      CaregiverPanel(user: ModalRoute.of(context).settings.arguments),
   '/reportScreen': (context) =>
       ReportScreen(arguments: ModalRoute.of(context).settings.arguments),
   '/addReportScreen': (context) =>
       AddReportScreen(arguments: ModalRoute.of(context).settings.arguments),
-  '/caregiverPanel': (context) =>
-      CaregiverPanel(arguments: ModalRoute.of(context).settings.arguments),
 };

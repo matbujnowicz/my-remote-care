@@ -4,13 +4,14 @@ import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/patient_model.dart';
 import 'package:mrc/data/report_model.dart';
 import 'package:mrc/data/statiscis_generator.dart';
+import 'package:mrc/data/user_model.dart';
 import 'package:mrc/screens/supervisor/browse_screen.dart';
 import 'package:mrc/screens/supervisor/edit_patient_info.dart';
 import 'package:mrc/screens/supervisor/manage_screen.dart';
 import 'package:mrc/screens/supervisor/statiscits_screen.dart';
 
 class SupervisorPanel extends StatefulWidget {
-  final FirebaseUser user;
+  final UserModel user;
 
   SupervisorPanel({
     this.user,
@@ -31,7 +32,7 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
   @override
   void initState() {
     setState(() {
-      ReportModel.getReportsFromFirebase(widget.user.uid, _reports, () {});
+      ReportModel.getReportsFromFirebase(widget.user.userId, _reports, () {});
     });
 
     super.initState();

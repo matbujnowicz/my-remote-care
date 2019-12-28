@@ -3,21 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
 import 'package:mrc/data/patient_model.dart';
 import 'package:mrc/data/report_model.dart';
+import 'package:mrc/data/user_model.dart';
 import 'package:mrc/screens/caregiver/dashboard_screen.dart';
 import 'package:mrc/screens/caregiver/patient_info_screen.dart';
 import 'package:mrc/screens/caregiver/supervisor_screen.dart';
 
-class CaregiverPanelArguments {
-  final FirebaseUser user;
-  final String supervisorId;
-
-  CaregiverPanelArguments({this.supervisorId, this.user});
-}
-
 class CaregiverPanel extends StatefulWidget {
-  final CaregiverPanelArguments arguments;
+  final UserModel user;
   CaregiverPanel({
-    this.arguments,
+    this.user,
     Key key,
   }) : super(key: key);
 
@@ -42,7 +36,7 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   @override
   void initState() {
     setState(() {
-      supervisorId = widget.arguments.supervisorId;
+      supervisorId = widget.user.supervisorId;
       if (supervisorId != null)
         ReportModel.getReportsFromFirebase(supervisorId, _reports, resetState);
       else
@@ -171,8 +165,7 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
       case 1:
         return PatientInfoScreen(patient);
       case 2:
-        return SupervisorScreen(
-            supervisorId: supervisorId, user: widget.arguments.user);
+        return SupervisorScreen(user: widget.user);
       default:
         return Container();
     }

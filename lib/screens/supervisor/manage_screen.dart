@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/data/report_model.dart';
+import 'package:mrc/data/user_model.dart';
 import 'package:mrc/screens/common/report_screen.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/report_card.dart';
@@ -8,7 +8,7 @@ import 'package:mrc/screens/supervisor/add_report_screen.dart';
 
 class ManageScreen extends StatelessWidget {
   final List<ReportModel> reports;
-  final FirebaseUser user;
+  final UserModel user;
   final Function resetState;
 
   ManageScreen({

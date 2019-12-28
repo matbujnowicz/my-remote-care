@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
-import 'package:mrc/screens/caregiver/caregiver_panel.dart';
+import 'package:mrc/data/user_model.dart';
 import 'package:mrc/widgets/card_default.dart';
 import 'package:mrc/widgets/primary_button.dart';
 import 'package:mrc/widgets/text_button.dart';
 import 'package:mrc/widgets/text_field_default.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({
@@ -18,8 +16,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenScreenState extends State<RegisterScreen> {
-  final _auth = FirebaseAuth.instance;
-  final _firestore = Firestore.instance;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _retypePasswordController = TextEditingController();
@@ -156,7 +152,7 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
   }
 
   Future<void> registerUser() async {
-    AuthResult result;
+    UserModel user;
 
     if (_passwordController.text != _retypePasswordController.text) {
       setState(() {
@@ -169,48 +165,17 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
       buttonEnabled = false;
     });
 
-    try {
-      result = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-    } on Exception catch (e) {
-      setState(() {
-        message = getExceptionMessage(e);
-      });
-    }
-
-    if (result != null) {
-      setUserData(result.user);
-    } else
+    user = await UserModel.registerNewUser(
+        _emailController.text, _passwordController.text, _isCaregiver, message);
+    if (user == null) {
       setState(() {
         buttonEnabled = true;
       });
-  }
-
-  Future<void> setUserData(FirebaseUser user) async {
-    await _firestore.collection('users').document().setData({
-      "userId": user.uid,
-      "role": _isCaregiver ? "caregiver" : "supervisor",
-      "mail": _emailController.text,
-    });
-
-    setState(() {
-      buttonEnabled = true;
-    });
-
-    if (_isCaregiver)
-      Navigator.pushNamed(context, "/caregiverPanel",
-          arguments: CaregiverPanelArguments(user: user));
-    else
-      Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
-  }
-
-  String getExceptionMessage(Exception e) {
-    String exceptionMessage = e.toString();
-    int startIndex = exceptionMessage.indexOf(",");
-    exceptionMessage = exceptionMessage.substring(startIndex + 1);
-    int endIndex = exceptionMessage.indexOf(",");
-    return exceptionMessage = exceptionMessage.substring(0, endIndex - 1);
+    } else {
+      if (user.isCaregiver())
+        Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
+      else
+        Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
+    }
   }
 }
