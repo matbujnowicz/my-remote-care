@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mrc/app/styles.dart';
@@ -106,25 +108,40 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
   }
 
   void saveSupervisorIdByEmail(String mail) {
-    UserModel.findUserByValue("mail", mail, setSupervisorId);
+    message = "";
+    UserModel.findUserByValue("mail", mail, saveSupervisorToThisUser);
+    Timer(Duration(seconds: 3), () {
+      if (message == "")
+        setState(() {
+          message = "Timeout reached -> user not found";
+        });
+    });
   }
 
-  void setSupervisorId(DocumentSnapshot supervisorDoc) async {
+  void saveSupervisorToThisUser(DocumentSnapshot supervisorDoc) async {
     UserModel supervisorUser =
         UserModel.documentSnapshotToUserModel(supervisorDoc);
     if (supervisorUser == null ||
         supervisorUser.userId == null ||
         supervisorUser.role == null) {
       setState(() {
-        message = "Wrogn user";
+        message = "Wrong user";
       });
     } else if (supervisorUser.isCaregiver()) {
       setState(() {
         message = "This email does not belong to a supervisor";
       });
     } else {
-      await UserModel.updateUser(
-          widget.user.userId, {"supervisorId": supervisorUser.userId});
+      setState(() {
+        message = "Supervisor saved";
+      });
+      await UserModel.updateUser(widget.user.userId, {
+        "supervisorId": supervisorUser.userId,
+        "patientId": supervisorUser.patientId
+      });
+      widget.user.patientId = supervisorUser.patientId;
+      widget.user.supervisorId = supervisorUser.userId;
+
       Navigator.pushReplacementNamed(context, "/caregiverPanel",
           arguments: widget.user);
     }

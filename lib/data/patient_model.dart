@@ -13,7 +13,7 @@ class PatientModel {
   static Future<void> savePatientInfoInFirebase(
       PatientModel patient, String patientId) async {
     final firestore = Firestore.instance;
-    await firestore.document('patients/' + patientId).setData({
+    await firestore.document('patients/' + patientId).updateData({
       "name": patient.name,
       "surname": patient.surname,
       "yearOfBirth": patient.yearOfBirth,
@@ -22,12 +22,14 @@ class PatientModel {
     });
   }
 
-  static String createNewPatient() {
+  static Future<String> createNewPatient() async {
     final firestore = Firestore.instance;
-    return firestore.collection('patients').document().documentID;
+    final doc = firestore.collection('patients').document();
+    await doc.setData({"name": ""});
+    return doc.documentID;
   }
 
-  Future<PatientModel> getPatient(String patientId) async {
+  static Future<PatientModel> getPatient(String patientId) async {
     final firestore = Firestore.instance;
     final doc = await firestore.document('patients/' + patientId).get();
     return PatientModel(

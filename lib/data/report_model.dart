@@ -195,6 +195,6 @@ class ReportModel {
   static Future<void> updateReport(
       String reportId, Map<String, dynamic> data) async {
     final firestore = Firestore.instance;
-    await firestore.document('user/' + reportId).updateData(data);
+    await firestore.document('reports/' + reportId).updateData(data);
   }
 }

@@ -26,12 +26,7 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   String supervisorId;
   bool initialResetState = true;
 
-  final PatientModel patient = PatientModel(
-      name: "Walery",
-      surname: "Sudack",
-      height: "190",
-      weight: "55",
-      yearOfBirth: "1920");
+  PatientModel patient = PatientModel();
 
   @override
   void initState() {
@@ -42,7 +37,7 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
       else
         _screenIndex = 2;
     });
-
+    getPatient();
     super.initState();
   }
 
@@ -188,5 +183,13 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
       setState(() {
         initialResetState = false;
       });
+  }
+
+  void getPatient() async {
+    if (widget.user.patientId == null) return;
+
+    patient = await PatientModel.getPatient(widget.user.patientId);
+
+    setState(() {});
   }
 }

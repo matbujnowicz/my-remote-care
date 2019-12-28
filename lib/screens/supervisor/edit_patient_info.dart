@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:mrc/data/patient_model.dart';
+import 'package:mrc/data/user_model.dart';
 import 'package:mrc/widgets/patient_card.dart';
 import 'package:mrc/widgets/primary_button.dart';
 
 class EditPatientInfoScreen extends StatefulWidget {
-  final PatientModel patient;
+  final UserModel user;
 
-  EditPatientInfoScreen(this.patient);
+  EditPatientInfoScreen(this.user);
 
   @override
   _EditPatientInfoScreenState createState() => _EditPatientInfoScreenState();
 }
 
 class _EditPatientInfoScreenState extends State<EditPatientInfoScreen> {
+  PatientModel patient;
+
   bool changesMade = false;
 
   final nameController = TextEditingController();
@@ -20,12 +23,6 @@ class _EditPatientInfoScreenState extends State<EditPatientInfoScreen> {
   final yearOfBirthController = TextEditingController();
   final heightController = TextEditingController();
   final weightController = TextEditingController();
-
-  String name = "";
-  String surname = "";
-  String yearOfBirth = "";
-  String height = "";
-  String weight = "";
 
   @override
   void initState() {
@@ -48,7 +45,7 @@ class _EditPatientInfoScreenState extends State<EditPatientInfoScreen> {
             return Container(
               margin: const EdgeInsets.only(top: 30),
               child: PatientCard(
-                patient: widget.patient,
+                patient: patient,
                 nameController: nameController,
                 surnameController: surnameController,
                 yearOfBirthController: yearOfBirthController,
@@ -69,58 +66,53 @@ class _EditPatientInfoScreenState extends State<EditPatientInfoScreen> {
     );
   }
 
-  void savePatientInfo() {
-    widget.patient.name = nameController.text;
-    widget.patient.surname = surnameController.text;
-    widget.patient.yearOfBirth = yearOfBirthController.text;
-    widget.patient.height = heightController.text;
-    widget.patient.weight = weightController.text;
+  void savePatientInfo() async {
+    patient.name = nameController.text;
+    patient.surname = surnameController.text;
+    patient.yearOfBirth = yearOfBirthController.text;
+    patient.height = heightController.text;
+    patient.weight = weightController.text;
 
-    setState(() {
-      changesMade = false;
-      name = nameController.text;
-      surname = surnameController.text;
-      yearOfBirth = yearOfBirthController.text;
-      height = heightController.text;
-      weight = weightController.text;
-    });
+    changesMade = false;
+    setState(() {});
+    await PatientModel.savePatientInfoInFirebase(
+        patient, widget.user.patientId);
   }
 
   void addOnChangeListeners() {
     nameController.addListener(() {
-      if (nameController.text != name) changesMade = true;
+      if (nameController.text != patient.name) changesMade = true;
       setState(() {});
     });
     surnameController.addListener(() {
-      if (surnameController.text != surname) changesMade = true;
+      if (surnameController.text != patient.surname) changesMade = true;
       setState(() {});
     });
     yearOfBirthController.addListener(() {
-      if (yearOfBirthController.text != yearOfBirth) changesMade = true;
+      if (yearOfBirthController.text != patient.yearOfBirth) changesMade = true;
       setState(() {});
     });
     heightController.addListener(() {
-      if (heightController.text != height) changesMade = true;
+      if (heightController.text != patient.height) changesMade = true;
       setState(() {});
     });
     weightController.addListener(() {
-      if (weightController.text != weight) changesMade = true;
+      if (weightController.text != patient.weight) changesMade = true;
       setState(() {});
     });
   }
 
-  void intializeValues() {
-    nameController.text = widget.patient.name;
-    surnameController.text = widget.patient.surname;
-    yearOfBirthController.text = widget.patient.yearOfBirth;
-    heightController.text = widget.patient.height;
-    weightController.text = widget.patient.weight;
+  void intializeValues() async {
+    if (widget.user.patientId == null) return;
 
-    name = nameController.text;
-    surname = surnameController.text;
-    yearOfBirth = yearOfBirthController.text;
-    height = heightController.text;
-    weight = weightController.text;
+    patient = await PatientModel.getPatient(widget.user.patientId);
+
+    nameController.text = patient.name;
+    surnameController.text = patient.surname;
+    yearOfBirthController.text = patient.yearOfBirth;
+    heightController.text = patient.height;
+    weightController.text = patient.weight;
+
     setState(() {});
   }
 }

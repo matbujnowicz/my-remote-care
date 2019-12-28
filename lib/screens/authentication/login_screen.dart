@@ -139,10 +139,7 @@ class _LoginScreenScreenState extends State<LoginScreen> {
         _emailController.text, _passwordController.text, handleLogin);
 
     if (loginMessage != null) {
-      setState(() {
-        buttonEnabled = true;
-        message = loginMessage;
-      });
+      setMessage(loginMessage);
     }
   }
 
@@ -150,10 +147,7 @@ class _LoginScreenScreenState extends State<LoginScreen> {
     final user = UserModel.documentSnapshotToUserModel(doc);
 
     if (user.userId == null || user.role == null) {
-      setState(() {
-        message = "Wrong user";
-        buttonEnabled = true;
-      });
+      setMessage("Wrong user");
     } else {
       if (user.isCaregiver())
         Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
@@ -162,11 +156,10 @@ class _LoginScreenScreenState extends State<LoginScreen> {
     }
   }
 
-  String getExceptionMessage(Exception e) {
-    String exceptionMessage = e.toString();
-    int startIndex = exceptionMessage.indexOf(",");
-    exceptionMessage = exceptionMessage.substring(startIndex + 1);
-    int endIndex = exceptionMessage.indexOf(",");
-    return exceptionMessage = exceptionMessage.substring(0, endIndex - 1);
+  void setMessage(String newMessage) {
+    setState(() {
+      buttonEnabled = true;
+      message = newMessage;
+    });
   }
 }

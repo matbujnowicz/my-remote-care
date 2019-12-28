@@ -43,8 +43,8 @@ class UserModel {
         userId: doc["userId"]);
   }
 
-  static Future<UserModel> registerNewUser(
-      String mail, String password, bool isCaregiver, String message) async {
+  static Future<dynamic> registerNewUser(String mail, String password,
+      bool isCaregiver, Function messageCallback) async {
     AuthResult result;
     String userId;
     String patientId;
@@ -57,13 +57,13 @@ class UserModel {
         password: password,
       );
     } on Exception catch (e) {
-      message = getExceptionMessage(e);
+      messageCallback(getExceptionMessage(e));
     }
 
     if (result != null) {
       final doc = firestore.collection('users').document();
       userId = doc.documentID;
-      if (!isCaregiver) patientId = PatientModel.createNewPatient();
+      if (!isCaregiver) patientId = await PatientModel.createNewPatient();
       await doc.setData({
         "userId": userId,
         "role": isCaregiver ? "caregiver" : "supervisor",
@@ -99,7 +99,7 @@ class UserModel {
     }
 
     if (result != null) {
-      findUserByValue("firebaseID", result.user.uid, callback);
+      findUserByValue("firebaseId", result.user.uid, callback);
     }
 
     return message;
@@ -117,7 +117,7 @@ class UserModel {
   static Future<void> updateUser(
       String userId, Map<String, dynamic> data) async {
     final firestore = Firestore.instance;
-    await firestore.document('user/' + userId).updateData(data);
+    await firestore.document('users/' + userId).updateData(data);
   }
 
   static String getExceptionMessage(Exception e) {

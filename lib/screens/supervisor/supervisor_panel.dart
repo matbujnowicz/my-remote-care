@@ -169,7 +169,7 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
           },
         );
       case 2:
-        return EditPatientInfoScreen(patient);
+        return EditPatientInfoScreen(widget.user);
       case 3:
         return StatisticsScreen(
             generateStatistics(ReportModel.submittedReports(_reports)));
@@ -189,4 +189,7 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
     await _auth.signOut();
     Navigator.pushReplacementNamed(context, "/");
   }
+
+  //WYSWIETLAC SUBMITTED DATE DLA SUBMITTED
+  //NIE WYSWIETLANIE ICONY DLA REPORT CARDOW
 }

@@ -155,9 +155,7 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
     UserModel user;
 
     if (_passwordController.text != _retypePasswordController.text) {
-      setState(() {
-        message = "Passwords are not the same";
-      });
+      setMessage("Passwords are not the same");
       return;
     }
 
@@ -165,8 +163,8 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
       buttonEnabled = false;
     });
 
-    user = await UserModel.registerNewUser(
-        _emailController.text, _passwordController.text, _isCaregiver, message);
+    user = await UserModel.registerNewUser(_emailController.text,
+        _passwordController.text, _isCaregiver, setMessage);
     if (user == null) {
       setState(() {
         buttonEnabled = true;
@@ -177,5 +175,12 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
       else
         Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
     }
+  }
+
+  void setMessage(String newMessage) {
+    setState(() {
+      buttonEnabled = true;
+      message = newMessage;
+    });
   }
 }
