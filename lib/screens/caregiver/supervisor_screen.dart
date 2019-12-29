@@ -139,11 +139,6 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
         "supervisorId": supervisorUser.userId,
         "patientId": supervisorUser.patientId
       });
-      widget.user.patientId = supervisorUser.patientId;
-      widget.user.supervisorId = supervisorUser.userId;
-
-      Navigator.pushReplacementNamed(context, "/caregiverPanel",
-          arguments: widget.user);
     }
   }
 }

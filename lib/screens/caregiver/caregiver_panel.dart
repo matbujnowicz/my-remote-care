@@ -23,20 +23,19 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   int _screenIndex = 0;
   List<ReportModel> _reports = List();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String supervisorId;
   bool initialResetState = true;
 
   PatientModel patient = PatientModel();
 
   @override
   void initState() {
-    setState(() {
-      supervisorId = widget.user.supervisorId;
-      if (supervisorId != null)
-        ReportModel.getReportsFromFirebase(supervisorId, _reports, resetState);
-      else
+    if (widget.user.supervisorId != null)
+      ReportModel.getReportsFromFirebase(
+          widget.user.supervisorId, _reports, resetState);
+    else
+      setState(() {
         _screenIndex = 2;
-    });
+      });
     getPatient();
     super.initState();
   }

@@ -43,10 +43,17 @@ class ReportCard extends StatelessWidget {
   }
 
   Widget getIcon() {
-    if (report.submitted == null)
+    if (removeObject != null)
       return IconButton(
         icon: Icon(Icons.remove_circle_outline),
         onPressed: removeObject,
+        iconSize: 35,
+        color: primaryGreenColor,
+      );
+    if (report.submitted == null)
+      return IconButton(
+        icon: Icon(Icons.info_outline),
+        onPressed: onPress,
         iconSize: 35,
         color: primaryGreenColor,
       );
@@ -57,12 +64,13 @@ class ReportCard extends StatelessWidget {
         onPressed: onPress,
         color: primaryGreenColor,
       );
-    else
+    if (!report.submitted)
       return IconButton(
         iconSize: 35,
         icon: Icon(Icons.error_outline),
         onPressed: onPress,
         color: accentColor,
       );
+    return Container();
   }
 }
