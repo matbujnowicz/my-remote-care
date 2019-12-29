@@ -6,8 +6,9 @@ import 'package:mrc/widgets/primary_button.dart';
 
 class EditPatientInfoScreen extends StatefulWidget {
   final UserModel user;
+  final PatientModel patient;
 
-  EditPatientInfoScreen(this.user);
+  EditPatientInfoScreen(this.user, this.patient);
 
   @override
   _EditPatientInfoScreenState createState() => _EditPatientInfoScreenState();
@@ -103,9 +104,8 @@ class _EditPatientInfoScreenState extends State<EditPatientInfoScreen> {
   }
 
   void intializeValues() async {
+    patient = widget.patient;
     if (widget.user.patientId == null) return;
-
-    patient = await PatientModel.getPatient(widget.user.patientId);
 
     nameController.text = patient.name;
     surnameController.text = patient.surname;

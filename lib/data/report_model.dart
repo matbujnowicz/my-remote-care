@@ -119,22 +119,20 @@ class ReportModel {
     });
   }
 
-  static void getReportsFromFirebase(
-      String userId, List<ReportModel> reports, Function resetState) {
+  static void getReportsFromFirebase(String userId, Function recieveReports) {
     final firestore = Firestore.instance;
     firestore
         .collection('reports')
         .where("userId", isEqualTo: userId)
         .snapshots()
-        .listen((data) => addReportsToList(data, reports, resetState));
+        .listen((data) => addReportsToList(data, recieveReports));
   }
 
-  static void addReportsToList(
-      QuerySnapshot data, List<ReportModel> reports, Function resetState) {
-    reports.clear();
+  static void addReportsToList(QuerySnapshot data, Function recieveReports) {
+    List<ReportModel> reports = List();
     data.documents.forEach((doc) => addReportToList(doc, reports));
     sortReports(reports, true);
-    resetState();
+    recieveReports(reports);
   }
 
   static void addReportToList(DocumentSnapshot doc, List<ReportModel> reports) {

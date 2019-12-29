@@ -25,16 +25,13 @@ class SupervisorPanel extends StatefulWidget {
 class _SupervisorPanelState extends State<SupervisorPanel> {
   int _screenIndex = 0;
   List<ReportModel> _reports = List();
-  final PatientModel patient = PatientModel();
+  PatientModel patient = PatientModel();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool initialResetState = true;
 
   @override
   void initState() {
-    setState(() {
-      ReportModel.getReportsFromFirebase(widget.user.userId, _reports, () {});
-    });
-
+    ReportModel.getReportsFromFirebase(widget.user.userId, recieveReports);
+    getPatient();
     super.initState();
   }
 
@@ -164,12 +161,9 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
         return ManageScreen(
           reports: ReportModel.scheduledReports(_reports),
           user: widget.user,
-          resetState: () {
-            setState(() {});
-          },
         );
       case 2:
-        return EditPatientInfoScreen(widget.user);
+        return EditPatientInfoScreen(widget.user, patient);
       case 3:
         return StatisticsScreen(
             generateStatistics(ReportModel.submittedReports(_reports)));
@@ -190,6 +184,17 @@ class _SupervisorPanelState extends State<SupervisorPanel> {
     Navigator.pushReplacementNamed(context, "/");
   }
 
-  //WYSWIETLAC SUBMITTED DATE DLA SUBMITTED
-  //NIE WYSWIETLANIE ICONY DLA REPORT CARDOW
+  void recieveReports(List<ReportModel> reports) {
+    setState(() {
+      _reports = reports;
+    });
+  }
+
+  void getPatient() async {
+    if (widget.user.patientId == null) return;
+
+    patient = await PatientModel.getPatient(widget.user.patientId);
+
+    setState(() {});
+  }
 }

@@ -48,7 +48,7 @@ class ReportCard extends StatelessWidget {
         icon: Icon(Icons.remove_circle_outline),
         onPressed: removeObject,
         iconSize: 35,
-        color: primaryGreenColor,
+        color: accentColor,
       );
     if (report.submitted == null)
       return IconButton(

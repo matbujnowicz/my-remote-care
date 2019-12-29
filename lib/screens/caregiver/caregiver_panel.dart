@@ -23,15 +23,13 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   int _screenIndex = 0;
   List<ReportModel> _reports = List();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool initialResetState = true;
-
   PatientModel patient = PatientModel();
 
   @override
   void initState() {
     if (widget.user.supervisorId != null)
       ReportModel.getReportsFromFirebase(
-          widget.user.supervisorId, _reports, resetState);
+          widget.user.supervisorId, recieveReports);
     else
       setState(() {
         _screenIndex = 2;
@@ -63,9 +61,7 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
                 child: Stack(children: <Widget>[
                   Positioned(
                     child: IconButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, "/");
-                      },
+                      onPressed: logOut,
                       icon: Icon(Icons.power_settings_new),
                       color: accentColor,
                       iconSize: 35,
@@ -153,9 +149,7 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
   Widget _getScreenWidget() {
     switch (_screenIndex) {
       case 0:
-        return DashboardScreen(
-            reports: ReportModel.scheduledReports(_reports),
-            resetState: resetState);
+        return DashboardScreen(reports: ReportModel.scheduledReports(_reports));
       case 1:
         return PatientInfoScreen(patient);
       case 2:
@@ -177,11 +171,10 @@ class _CaregiverPanelState extends State<CaregiverPanel> {
     Navigator.pushReplacementNamed(context, "/");
   }
 
-  void resetState() {
-    if (initialResetState)
-      setState(() {
-        initialResetState = false;
-      });
+  void recieveReports(List<ReportModel> reports) {
+    setState(() {
+      _reports = reports;
+    });
   }
 
   void getPatient() async {

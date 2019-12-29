@@ -35,7 +35,7 @@ class DateTimePickerDefault extends StatelessWidget {
 
   String getFormattedDate() {
     if (valueDate == null) return "";
-    final format = DateFormat('dd.MM hh:mm a');
+    final format = DateFormat('dd.MM HH:mm');
     return format.format(valueDate);
   }
 }

@@ -9,12 +9,10 @@ import 'package:mrc/screens/supervisor/add_report_screen.dart';
 class ManageScreen extends StatelessWidget {
   final List<ReportModel> reports;
   final UserModel user;
-  final Function resetState;
 
   ManageScreen({
     this.reports,
     this.user,
-    this.resetState,
   });
 
   @override
@@ -62,6 +60,5 @@ class ManageScreen extends StatelessWidget {
 
   void removeReport(ReportModel report) async {
     await ReportModel.removeReportFromFirebase(report.reportId);
-    resetState();
   }
 }

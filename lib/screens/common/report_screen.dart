@@ -32,13 +32,19 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   List<Question> questions;
   List<TextEditingController> controllers = [];
+  String message = "";
 
   @override
   void initState() {
     setState(() {
       questions = widget.arguments.report.questions;
+      widget.arguments.report.questions.forEach((question) {
+        final newController = TextEditingController();
+        newController.text =
+            question.answer == null ? "" : question.answer.toString();
+        controllers.add(newController);
+      });
     });
-    questions.forEach((question) => controllers.add(TextEditingController()));
     super.initState();
   }
 
@@ -60,13 +66,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 return ReportCard(
                     onPress: () {}, report: widget.arguments.report);
               if (!widget.arguments.readOnly && index == questions.length + 1) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 30),
-                  child: PrimaryButton(
-                    text: "Save",
-                    onPressed: saveReport,
-                  ),
-                );
+                return buildSaveButton();
               } else {
                 Question question = questions.elementAt(index - 1);
                 return CardDefault(
@@ -95,7 +95,6 @@ class _ReportScreenState extends State<ReportScreen> {
 
   Widget buildAnswerField(Question question, int index) {
     TextEditingController controller = controllers.elementAt(index);
-    controller.text = question.answer == null ? "" : question.answer.toString();
 
     switch (question.questionType) {
       case QuestionType.Text:
@@ -135,5 +134,15 @@ class _ReportScreenState extends State<ReportScreen> {
       if (controller.text == null || controller.text == "") result = false;
     });
     return result;
+  }
+
+  Widget buildSaveButton() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 30),
+      child: PrimaryButton(
+        text: "Save",
+        onPressed: saveReport,
+      ),
+    );
   }
 }

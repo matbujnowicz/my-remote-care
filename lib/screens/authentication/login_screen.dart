@@ -127,7 +127,7 @@ class _LoginScreenScreenState extends State<LoginScreen> {
   }
 
   void _handleGoToRegister() {
-    Navigator.pushNamed(context, "/register");
+    Navigator.pushReplacementNamed(context, "/register");
   }
 
   Future<void> signIn() async {

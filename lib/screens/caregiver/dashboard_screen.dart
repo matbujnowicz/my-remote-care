@@ -7,10 +7,8 @@ import 'package:mrc/widgets/report_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   final List<ReportModel> reports;
-  final Function resetState;
   DashboardScreen({
     this.reports,
-    this.resetState,
   });
   final firestore = Firestore.instance;
 

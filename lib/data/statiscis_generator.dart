@@ -76,7 +76,7 @@ String averageMood(List<ReportModel> reports) {
   reports.forEach((report) {
     if (report.reportType != ReportType.Mood) return;
     moodReportscount++;
-    averageMood += report.questions[1].answer;
+    averageMood += int.tryParse(report.questions[1].answer);
   });
 
   return (averageMood / moodReportscount).toString();

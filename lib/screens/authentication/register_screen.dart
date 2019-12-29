@@ -149,7 +149,7 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
   }
 
   void _handleGoToLogin() {
-    Navigator.pushNamed(context, "/");
+    Navigator.pushReplacementNamed(context, "/");
   }
 
   void _switchRole(bool value) {
@@ -178,9 +178,11 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
       });
     } else {
       if (user.isCaregiver())
-        Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
+        Navigator.pushReplacementNamed(context, "/caregiverPanel",
+            arguments: user);
       else
-        Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
+        Navigator.pushReplacementNamed(context, "/supervisorPanel",
+            arguments: user);
     }
   }
 
