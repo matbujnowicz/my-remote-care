@@ -78,7 +78,6 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
                                 text: "Log in to existing account",
                                 onPressed: _handleGoToLogin,
                                 textStyle: accentFont,
-                                pressedTextStyle: grayFont,
                               ),
                             ),
                           ],

@@ -79,7 +79,6 @@ class _LoginScreenScreenState extends State<LoginScreen> {
                                 text: "Register new account",
                                 onPressed: _handleGoToRegister,
                                 textStyle: accentFont,
-                                pressedTextStyle: grayFont,
                               ),
                             ),
                           ],

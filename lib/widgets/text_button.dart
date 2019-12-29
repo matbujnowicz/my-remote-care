@@ -1,39 +1,23 @@
 import 'package:flutter/material.dart';
 
-class TextButton extends StatefulWidget {
+class TextButton extends StatelessWidget {
   final String text;
   final Function onPressed;
   final TextStyle textStyle;
-  final TextStyle pressedTextStyle;
 
-  TextButton(
-      {this.text, this.onPressed, this.textStyle, this.pressedTextStyle});
-
-  @override
-  _TextButtonState createState() => _TextButtonState();
-}
-
-class _TextButtonState extends State<TextButton> {
-  bool pressed = false;
+  TextButton({this.text, this.onPressed, this.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onPressed,
       child: AnimatedDefaultTextStyle(
-        style: pressed ? widget.pressedTextStyle : widget.textStyle,
+        style: textStyle,
         duration: const Duration(milliseconds: 1),
         child: Text(
-          widget.text,
+          text,
         ),
       ),
     );
-  }
-
-  void onTap() {
-    setState(() {
-      pressed = true;
-    });
-    widget.onPressed();
   }
 }
