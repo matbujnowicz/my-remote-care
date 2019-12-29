@@ -132,9 +132,6 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
         message = "This email does not belong to a supervisor";
       });
     } else {
-      setState(() {
-        message = "Supervisor saved";
-      });
       await UserModel.updateUser(widget.user.userId, {
         "supervisorId": supervisorUser.userId,
         "patientId": supervisorUser.patientId

@@ -25,13 +25,6 @@ class _LoginScreenScreenState extends State<LoginScreen> {
   bool buttonEnabled = true;
 
   @override
-  void initState() {
-    _emailController.text = "c@c.com";
-    _passwordController.text = "123456";
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -47,48 +40,55 @@ class _LoginScreenScreenState extends State<LoginScreen> {
           ),
           Container(
             width: screenWidth,
+            height: screenHeight,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CardDefault(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "My Remote Care",
-                      style: greenBoldFont.copyWith(fontSize: 30),
-                    ),
+                Container(
+                  height:
+                      screenHeight - MediaQuery.of(context).viewInsets.bottom,
+                  width: screenWidth * 0.9,
+                  child: ListView.builder(
+                    itemCount: 3,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == 0)
+                        return CardDefault(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "My Remote Care",
+                              style: greenBoldFont.copyWith(fontSize: 30),
+                            ),
+                          ),
+                          margin: const EdgeInsets.only(top: 20),
+                        );
+                      if (index == 1) return _buildLoginCard();
+                      if (index == 2)
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 20),
+                              child: PrimaryButton(
+                                text: "Log in",
+                                onPressed: buttonEnabled ? signIn : null,
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 40),
+                              child: TextButton(
+                                text: "Register new account",
+                                onPressed: _handleGoToRegister,
+                                textStyle: accentFont,
+                                pressedTextStyle: grayFont,
+                              ),
+                            ),
+                          ],
+                        );
+                      return Container();
+                    },
                   ),
-                  margin: const EdgeInsets.only(top: 85),
                 ),
-                _buildLoginCard(),
               ],
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              width: screenWidth,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    child: PrimaryButton(
-                      text: "Log in",
-                      onPressed: buttonEnabled ? signIn : null,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 40),
-                    child: TextButton(
-                      text: "Register new account",
-                      onPressed: _handleGoToRegister,
-                      textStyle: accentFont,
-                      pressedTextStyle: grayFont,
-                    ),
-                  ),
-                ],
-              ),
             ),
           )
         ],
@@ -150,9 +150,11 @@ class _LoginScreenScreenState extends State<LoginScreen> {
       setMessage("Wrong user");
     } else {
       if (user.isCaregiver())
-        Navigator.pushNamed(context, "/caregiverPanel", arguments: user);
+        Navigator.pushReplacementNamed(context, "/caregiverPanel",
+            arguments: user);
       else
-        Navigator.pushNamed(context, "/supervisorPanel", arguments: user);
+        Navigator.pushReplacementNamed(context, "/supervisorPanel",
+            arguments: user);
     }
   }
 
@@ -161,5 +163,9 @@ class _LoginScreenScreenState extends State<LoginScreen> {
       buttonEnabled = true;
       message = newMessage;
     });
+  }
+
+  bool isKeyboardOn(BuildContext context) {
+    return (MediaQuery.of(context).viewInsets.bottom > 0);
   }
 }

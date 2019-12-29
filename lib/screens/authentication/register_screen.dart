@@ -39,48 +39,55 @@ class _RegisterScreenScreenState extends State<RegisterScreen> {
           ),
           Container(
             width: screenWidth,
+            height: screenHeight,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CardDefault(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "My Remote Care",
-                      style: greenBoldFont.copyWith(fontSize: 30),
-                    ),
+                Container(
+                  height:
+                      screenHeight - MediaQuery.of(context).viewInsets.bottom,
+                  width: screenWidth * 0.9,
+                  child: ListView.builder(
+                    itemCount: 3,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == 0)
+                        return CardDefault(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "My Remote Care",
+                              style: greenBoldFont.copyWith(fontSize: 30),
+                            ),
+                          ),
+                          margin: const EdgeInsets.only(top: 20),
+                        );
+                      if (index == 1) return _buildRegisterCard();
+                      if (index == 2)
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 20),
+                              child: PrimaryButton(
+                                text: "Register",
+                                onPressed: buttonEnabled ? registerUser : null,
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 20),
+                              child: TextButton(
+                                text: "Log in to existing account",
+                                onPressed: _handleGoToLogin,
+                                textStyle: accentFont,
+                                pressedTextStyle: grayFont,
+                              ),
+                            ),
+                          ],
+                        );
+                      return Container();
+                    },
                   ),
-                  margin: const EdgeInsets.only(top: 85),
                 ),
-                _buildRegisterCard(),
               ],
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              width: screenWidth,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    child: PrimaryButton(
-                      text: "Register",
-                      onPressed: buttonEnabled ? registerUser : null,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 40),
-                    child: TextButton(
-                      text: "Log in to existing account",
-                      onPressed: _handleGoToLogin,
-                      textStyle: accentFont,
-                      pressedTextStyle: grayFont,
-                    ),
-                  ),
-                ],
-              ),
             ),
           )
         ],
