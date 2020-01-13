@@ -6,9 +6,8 @@ import 'package:mrc/widgets/card_default.dart';
 class FillReportCard extends StatelessWidget {
   final ReportModel report;
   final Function onPress;
-  final Function removeObject;
 
-  FillReportCard({@required this.report, this.onPress, this.removeObject});
+  FillReportCard({@required this.report, this.onPress});
 
   @override
   Widget build(BuildContext context) {

@@ -30,7 +30,7 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  List<Question> questions;
+  List<QuestionModel> questions;
   List<TextEditingController> controllers = [];
   String message = "";
 
@@ -68,7 +68,7 @@ class _ReportScreenState extends State<ReportScreen> {
               if (!widget.arguments.readOnly && index == questions.length + 1) {
                 return buildSaveButton();
               } else {
-                Question question = questions.elementAt(index - 1);
+                QuestionModel question = questions.elementAt(index - 1);
                 return CardDefault(
                   margin: EdgeInsets.only(bottom: 30),
                   child: Column(
@@ -93,7 +93,7 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  Widget buildAnswerField(Question question, int index) {
+  Widget buildAnswerField(QuestionModel question, int index) {
     TextEditingController controller = controllers.elementAt(index);
 
     switch (question.questionType) {

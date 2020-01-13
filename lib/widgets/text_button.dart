@@ -11,12 +11,9 @@ class TextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
-      child: AnimatedDefaultTextStyle(
+      child: Text(
+        text,
         style: textStyle,
-        duration: const Duration(milliseconds: 1),
-        child: Text(
-          text,
-        ),
       ),
     );
   }

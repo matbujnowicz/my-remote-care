@@ -5,10 +5,11 @@ enum QuestionType {
   Radio,
 }
 
-class Question {
+class QuestionModel {
   QuestionType questionType;
   String question;
   dynamic answer;
 
-  Question({@required this.questionType, @required this.question, this.answer});
+  QuestionModel(
+      {@required this.questionType, @required this.question, this.answer});
 }

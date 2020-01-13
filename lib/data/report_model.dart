@@ -13,7 +13,7 @@ class ReportModel {
   DateTime submissionDate;
   Duration duration = Duration(hours: 1);
   ReportType reportType;
-  List<Question> questions;
+  List<QuestionModel> questions;
   String reportId;
 
   ReportModel({
@@ -81,29 +81,29 @@ class ReportModel {
     }
   }
 
-  static List<Question> dietQuestions() {
+  static List<QuestionModel> dietQuestions() {
     return [
-      Question(questionType: QuestionType.Text, question: "Breakfast"),
-      Question(questionType: QuestionType.Text, question: "Lunch"),
-      Question(questionType: QuestionType.Text, question: "Dinner"),
-      Question(
+      QuestionModel(questionType: QuestionType.Text, question: "Breakfast"),
+      QuestionModel(questionType: QuestionType.Text, question: "Lunch"),
+      QuestionModel(questionType: QuestionType.Text, question: "Dinner"),
+      QuestionModel(
           questionType: QuestionType.Radio,
           question: "Rate patient's appetite"),
     ];
   }
 
-  static List<Question> moodQuestions() {
+  static List<QuestionModel> moodQuestions() {
     return [
-      Question(
+      QuestionModel(
           questionType: QuestionType.Text, question: "Describe patient's mood"),
-      Question(
+      QuestionModel(
           questionType: QuestionType.Radio, question: "Rate patient's mood"),
     ];
   }
 
-  static List<Question> medicinesQuestions() {
+  static List<QuestionModel> medicinesQuestions() {
     return [
-      Question(
+      QuestionModel(
           questionType: QuestionType.Text,
           question: "What medicines has patient taken today?"),
     ];
